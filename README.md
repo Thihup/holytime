@@ -3,6 +3,7 @@
 Steps to make [Holyrics](https://holyrics.com.br) work with newer Java versions (11/17+).
 Overall, it works just fine. However, as much of its components were removed from standard JDKs, you must put it back to it work as it worked with JDK 8.
 
+(Note that these commands were tried with Linux, for Windows some of them may change a little bit, like from ":" to ";")
 
 ## Download
 - [Nashorn](https://repo1.maven.org/maven2/org/openjdk/nashorn/nashorn-core/15.3/nashorn-core-15.3.jar) 
@@ -59,3 +60,10 @@ Currently, there are some minor issues:
 - Antialiasing does not work correctly
   - It seems to be related to: java.lang.NoSuchFieldException: AA_TEXT_PROPERTY_KEY
 - The File icon shows either a broken image or the text "File"
+
+
+# Did someone say Modules?
+If your are feeling adventures, you can try to use the Holyrics in the module-path:
+```
+java -Dsun.java2d.d3d=false --module-path mods:mods/javafx-sdk-18/lib:mods/jaxb-ri/mod:mods/jaxws-ri/lib:lib/AbsoluteLayout.jar:lib/beansbinding-1.2.1.jar:lib/Bible-1.3.0.jar:lib/bridj-0.7.0.jar:lib/commons-imaging-1.0-alpha1.jar:lib/dom4j-1.6.1.jar:lib/google-zxing-3.2.1.jar:lib/gson-2.4.jar:lib/jna-3.5.2.jar:lib/jna-platform-4.1.0.jar:lib/xmlbeans-2.6.0.jar:lib/webcam-capture-0.3.12.jar:lib/vlcj-2.4.1.jar:lib/VagalumeAPI_LG-1.0.0.jar:lib/sqlite-jdbc-3.8.11.2.jar:lib/SpellCheck-1.4.1.jar:lib/SevenZip.jar:lib/PopupWorker-1.0.0.jar:lib/poi-3.9-20121203.jar:lib/i18n-1.0.0.jar:lib/weblaf-1.29.jar:Holyrics.jar:lib/poi-ooxml-schemas-3.9-20121203.jar --patch-module=poi=lib/poi-ooxml-3.9-20121203.jar:lib/poi-scratchpad-3.9.jar --patch-module=weblaf=lib/holyrics-lib-fix-1.0.0.jar --add-modules ALL-MODULE-PATH,java.sql --add-opens=java.base/java.util=weblaf --add-opens=java.base/java.lang.reflect=weblaf --add-opens=java.base/java.lang=weblaf --add-opens=java.base/java.text=weblaf --add-opens=java.desktop/java.awt=weblaf --add-opens=java.desktop/java.awt.font=weblaf --add-opens=java.desktop/java.awt.event=weblaf --add-opens=java.desktop/javax.swing=weblaf --add-opens=java.desktop/javax.swing.table=weblaf --add-opens=java.desktop/sun.font=weblaf --add-opens=java.desktop/sun.awt.X11=weblaf --add-exports=javafx.web/com.sun.webkit.dom=Holyrics -m Holyrics
+```
