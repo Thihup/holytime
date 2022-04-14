@@ -62,6 +62,13 @@ Windows:
 java -Dsun.java2d.d3d=false --module-path mods;mods/javafx-sdk-18/lib;mods/jaxb-ri/mod;mods/jaxws-ri/lib --add-modules ALL-MODULE-PATH --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED --add-opens=java.desktop/java.awt.event=ALL-UNNAMED --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.desktop/javax.swing.table=ALL-UNNAMED --add-opens=java.desktop/sun.font=ALL-UNNAMED --add-exports=javafx.web/com.sun.webkit.dom=ALL-UNNAMED -jar Holyrics.exe
 ```
 
+## Tips
+
+### To have a lower RAM usage (less than 200 MB!)
+- You can use the ZGC garbage collector (`-XX:+UseZGC`)
+- You can enable the String deduplication (`-XX:+UseStringDeduplication` - It will only work with ZGC starting with JDK 18)
+- You can use CDS (starting with JDK 19, you can just use `-XX:+AutoCreateSharedArchive -XX:SharedArchiveFile=app.cds`)
+
 ## Issues
 Currently, there are some minor issues:
 - Antialiasing does not work correctly
