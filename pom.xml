@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>dev.thihup</groupId>
+    <artifactId>holy-agent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>9</maven.compiler.source>
+        <maven.compiler.target>9</maven.compiler.target>
+    </properties>
+
+    <build>
+        <finalName>holy-agent</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.0</version>
+                <configuration>
+                    <compilerArgs>
+                        <arg>
+                            --add-exports=java.base/jdk.internal.org.objectweb.asm=dev.thihup.holy.agent
+                        </arg>
+                        <arg>
+                            --add-exports=java.base/jdk.internal.org.objectweb.asm.commons=dev.thihup.holy.agent
+                        </arg>
+                        <arg>--add-exports=java.desktop/sun.awt=dev.thihup.holy.agent</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Premain-Class>
+                                dev.thihup.holy.agent.Premain
+                            </Premain-Class>
+                            <Can-Retransform-Classes>
+                                true
+                            </Can-Retransform-Classes>
+                            <Can-Redefine-Classes>
+                                true
+                            </Can-Redefine-Classes>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
