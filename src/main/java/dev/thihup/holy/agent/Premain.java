@@ -19,6 +19,11 @@ import jdk.internal.org.objectweb.asm.commons.SimpleRemapper;
 public class Premain {
 
     private static final System.Logger LOGGER = System.getLogger(Premain.class.getName());
+    enum SetupUIFix {
+        AA_TEXT_INFO,
+        RENDERING_HINTS
+    }
+    static SetupUIFix UI_FIX_TYPE = SetupUIFix.AA_TEXT_INFO;
 
     private static void openPackagesForModule(String moduleName,
         Map<String, Set<Module>> packageToModule,
@@ -31,7 +36,15 @@ public class Premain {
     }
 
     public static void premain(String agentArgs, Instrumentation inst) {
-        LOGGER.log(Level.INFO, "[Holyrics Patcher] Agent loaded");
+        if (agentArgs != null) {
+            if (Integer.parseInt(agentArgs) == 1) {
+                UI_FIX_TYPE = SetupUIFix.AA_TEXT_INFO;
+            } else if (Integer.parseInt(agentArgs) == 2) {
+                UI_FIX_TYPE = SetupUIFix.RENDERING_HINTS;
+            }
+
+        }
+        LOGGER.log(Level.INFO, "[Holyrics Patcher] Agent loaded (Using " + UI_FIX_TYPE + ")");
         addOpens(inst);
 
         redefineReflection(inst);

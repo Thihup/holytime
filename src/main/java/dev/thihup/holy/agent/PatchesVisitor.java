@@ -1,6 +1,7 @@
 package dev.thihup.holy.agent;
 
 
+import dev.thihup.holy.agent.Premain.SetupUIFix;
 import java.lang.reflect.Modifier;
 import jdk.internal.org.objectweb.asm.ClassVisitor;
 import jdk.internal.org.objectweb.asm.FieldVisitor;
@@ -95,14 +96,39 @@ public class PatchesVisitor extends ClassVisitor {
                 public void visitCode() {
                     methodVisitor.visitCode();
 
-                    // sun.swing.SwingUtilities2.putAATextInfo(true, table);
+                    if (Premain.UI_FIX_TYPE == SetupUIFix.RENDERING_HINTS) {
+                        // table.put(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+                        // table.put(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING, java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-                    methodVisitor.visitInsn(Opcodes.ICONST_1);
-                    methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-                    methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "sun/swing/SwingUtilities2",
-                        "putAATextInfo",
-                        "(ZLjava/util/Map;)V", false);
+                        methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+                        methodVisitor.visitFieldInsn(Opcodes.GETSTATIC, "java/awt/RenderingHints",
+                            "KEY_ANTIALIASING", "Ljava/awt/RenderingHints$Key;");
+                        methodVisitor.visitFieldInsn(Opcodes.GETSTATIC, "java/awt/RenderingHints",
+                            "VALUE_ANTIALIAS_ON", "Ljava/lang/Object;");
+                        methodVisitor.visitMethodInsn(Opcodes.INVOKEINTERFACE, "java/util/Map",
+                            "put",
+                            "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", true);
+                        methodVisitor.visitInsn(Opcodes.POP);
+                        methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+                        methodVisitor.visitFieldInsn(Opcodes.GETSTATIC, "java/awt/RenderingHints",
+                            "KEY_TEXT_ANTIALIASING", "Ljava/awt/RenderingHints$Key;");
+                        methodVisitor.visitFieldInsn(Opcodes.GETSTATIC, "java/awt/RenderingHints",
+                            "VALUE_TEXT_ANTIALIAS_ON", "Ljava/lang/Object;");
+                        methodVisitor.visitMethodInsn(Opcodes.INVOKEINTERFACE, "java/util/Map",
+                            "put",
+                            "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", true);
+                        methodVisitor.visitInsn(Opcodes.POP);
 
+                    } else if (Premain.UI_FIX_TYPE == SetupUIFix.AA_TEXT_INFO) {
+                        // sun.swing.SwingUtilities2.putAATextInfo(true, table);
+
+                        methodVisitor.visitInsn(Opcodes.ICONST_1);
+                        methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+                        methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC,
+                            "sun/swing/SwingUtilities2",
+                            "putAATextInfo",
+                            "(ZLjava/util/Map;)V", false);
+                    }
                     methodVisitor.visitInsn(Opcodes.RETURN);
                     methodVisitor.visitMaxs(0, 0);
                     methodVisitor.visitEnd();
