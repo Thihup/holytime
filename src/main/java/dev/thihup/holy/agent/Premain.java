@@ -2,6 +2,7 @@ package dev.thihup.holy.agent;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.System.Logger.Level;
 import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
@@ -17,14 +18,20 @@ import jdk.internal.org.objectweb.asm.commons.SimpleRemapper;
 
 public class Premain {
 
-    private static Module getModuleOrThrow(String moduleName) {
-        return ModuleLayer.boot().findModule(moduleName)
-            .orElseThrow(() -> new IllegalStateException("Module " + moduleName + " not found"));
+    private static final System.Logger LOGGER = System.getLogger(Premain.class.getName());
+
+    private static void openPackagesForModule(String moduleName,
+        Map<String, Set<Module>> packageToModule,
+        Instrumentation instrumentation) {
+        ModuleLayer.boot().findModule(moduleName).ifPresentOrElse(module -> {
+            instrumentation.redefineModule(module, Set.of(), Map.of(), packageToModule, Set.of(),
+                Map.of());
+        }, () -> LOGGER.log(Level.WARNING,
+            "[Holyrics Patcher] Module " + moduleName + " not found"));
     }
 
     public static void premain(String agentArgs, Instrumentation inst) {
-        System.out.println("[Holyrics Patcher] Agent loaded");
-
+        LOGGER.log(Level.INFO, "[Holyrics Patcher] Agent loaded");
         addOpens(inst);
 
         redefineReflection(inst);
@@ -40,7 +47,8 @@ public class Premain {
                         Objects.requireNonNull(ClassLoader.getSystemResourceAsStream(
                             "jdk/internal/reflect/Reflection.class")).readAllBytes())));
         } catch (UnmodifiableClassException | ClassNotFoundException | IOException e) {
-            System.out.println("[Holyrics Patcher] Failed to patch jdk/internal/reflect/Reflection");
+            LOGGER.log(Level.WARNING,
+                "[Holyrics Patcher] Failed to patch jdk/internal/reflect/Reflection");
         }
     }
 
@@ -49,40 +57,36 @@ public class Premain {
 
         Module unnamedModule = systemClassLoader.getUnnamedModule();
 
-        instrumentation.redefineModule(getModuleOrThrow("java.desktop"), Set.of(),
-            Map.of(), Map.of(
-                "java.awt", Set.of(unnamedModule),
-                "java.awt.font", Set.of(unnamedModule),
-                "java.awt.event", Set.of(unnamedModule),
-                "javax.swing", Set.of(unnamedModule),
-                "javax.swing.table", Set.of(unnamedModule),
-                "javax.swing.text", Set.of(unnamedModule),
-                "javax.swing.text.html", Set.of(unnamedModule),
-                "javax.swing.plaf.basic", Set.of(unnamedModule),
-                "sun.swing", Set.of(unnamedModule),
-                "sun.font", Set.of(unnamedModule)
-            ), Set.of(), Map.of());
+        openPackagesForModule("java.desktop", Map.of(
+            "java.awt", Set.of(unnamedModule),
+            "java.awt.font", Set.of(unnamedModule),
+            "java.awt.event", Set.of(unnamedModule),
+            "javax.swing", Set.of(unnamedModule),
+            "javax.swing.table", Set.of(unnamedModule),
+            "javax.swing.text", Set.of(unnamedModule),
+            "javax.swing.text.html", Set.of(unnamedModule),
+            "javax.swing.plaf.basic", Set.of(unnamedModule),
+            "sun.swing", Set.of(unnamedModule),
+            "sun.font", Set.of(unnamedModule)), instrumentation);
 
         try {
-            instrumentation.redefineModule(getModuleOrThrow("java.desktop"), Set.of(),
-                Map.of(), Map.of("sun.awt.X11", Set.of(unnamedModule)), Set.of(), Map.of());
+            openPackagesForModule("java.desktop", Map.of("sun.awt.X11", Set.of(unnamedModule)),
+                instrumentation);
         } catch (Exception ignored) {
         }
 
-        instrumentation.redefineModule(getModuleOrThrow("java.base"), Set.of(),
-            Map.of(), Map.of(
-                "java.util", Set.of(unnamedModule),
-                "java.lang", Set.of(unnamedModule),
-                "java.lang.reflect", Set.of(unnamedModule),
-                "java.text", Set.of(unnamedModule),
-                "jdk.internal.org.objectweb.asm", Set.of(unnamedModule),
-                "jdk.internal.org.objectweb.asm.commons", Set.of(unnamedModule)
-            ), Set.of(), Map.of());
+        openPackagesForModule("java.base", Map.of(
+            "java.util", Set.of(unnamedModule),
+            "java.lang", Set.of(unnamedModule),
+            "java.lang.reflect", Set.of(unnamedModule),
+            "java.text", Set.of(unnamedModule),
+            "jdk.internal.org.objectweb.asm", Set.of(unnamedModule),
+            "jdk.internal.org.objectweb.asm.commons", Set.of(unnamedModule)
+        ), instrumentation);
 
-        instrumentation.redefineModule(getModuleOrThrow("javafx.web"), Set.of(),
-            Map.of(), Map.of(
-                "com.sun.webkit.dom", Set.of(unnamedModule)
-            ), Set.of(), Map.of());
+        openPackagesForModule("javafx.web", Map.of(
+            "com.sun.webkit.dom", Set.of(unnamedModule)
+        ), instrumentation);
     }
 
     private static class HolyPatcher implements ClassFileTransformer {
@@ -126,7 +130,7 @@ public class Premain {
         }
 
         private byte[] remapClass(String className, byte[] classfileBuffer) {
-            System.out.println("[Holyrics Patcher] Patching " + className);
+            LOGGER.log(Level.DEBUG, "[Holyrics Patcher] Patching " + className);
             ClassReader classReader = new ClassReader(classfileBuffer);
             ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_FRAMES);
             ClassRemapper classRemapper = new ClassRemapper(classWriter, REMAPPER);
@@ -137,7 +141,7 @@ public class Premain {
         }
 
         static byte[] patchClass(String className, byte[] classfileBuffer) {
-            System.out.println("[Holyrics Patcher] Patching " + className);
+            LOGGER.log(Level.DEBUG, "[Holyrics Patcher] Patching " + className);
             ClassReader classReader = new ClassReader(classfileBuffer);
             ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_FRAMES);
 
