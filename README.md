@@ -91,6 +91,9 @@ jar uf ./mods/jaxws-ri/lib/jakarta.annotation-api.jar -C ./tmp/java.annotation/ 
 jlink --module-path mods:./mods/javafx-jmods-18\:./mods/jaxb-ri/mod:./mods/jaxws-ri/lib --add-modules ALL-MODULE-PATH,java.base,java.compiler,java.datatransfer,java.desktop,java.instrument,java.logging,java.management,java.management.rmi,java.naming,java.net.http,java.prefs,java.rmi,java.scripting,java.se,java.security.jgss,java.security.sasl,java.smartcardio,java.sql,java.sql.rowset,java.transaction.xa,java.xml,java.xml.crypto,jdk.accessibility,jdk.charsets,jdk.crypto.cryptoki,jdk.crypto.ec,jdk.dynalink,jdk.httpserver,jdk.incubator.foreign,jdk.incubator.vector,jdk.internal.vm.ci,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management,jdk.jdwp.agent,jdk.jfr,jdk.jsobject,jdk.localedata,jdk.management,jdk.management.agent,jdk.management.jfr,jdk.naming.dns,jdk.naming.rmi,jdk.net,jdk.nio.mapmode,jdk.sctp,jdk.security.auth,jdk.security.jgss,jdk.unsupported,jdk.xml.dom,jdk.zipfs --output holytime --compress 2
 ```
 
+## Anti-aliasing issues?
+- Try setting the `J2D_UISCALE` environment variable to 100
+
 # Did someone say Modules?
 If your are feeling adventures, you can try to use the Holyrics in the module-path:
 
