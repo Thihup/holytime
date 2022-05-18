@@ -92,7 +92,7 @@ jlink --module-path mods:./mods/javafx-jmods-18\:./mods/jaxb-ri/mod:./mods/jaxws
 ```
 
 ## Anti-aliasing issues?
-- Try setting the `J2D_UISCALE` environment variable to 100
+- Try setting the `J2D_UISCALE` environment variable to 96
 
 # Did someone say Modules?
 If your are feeling adventures, you can try to use the Holyrics in the module-path:
