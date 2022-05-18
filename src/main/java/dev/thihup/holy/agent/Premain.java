@@ -88,6 +88,12 @@ public class Premain {
         } catch (Exception ignored) {
         }
 
+        try {
+            openPackagesForModule("java.desktop", Map.of("sun.awt.shell", Set.of(unnamedModule)),
+                instrumentation);
+        } catch (Exception ignored) {
+        }
+        
         openPackagesForModule("java.base", Map.of(
             "java.util", Set.of(unnamedModule),
             "java.lang", Set.of(unnamedModule),
