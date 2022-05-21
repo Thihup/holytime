@@ -19,10 +19,12 @@ import jdk.internal.org.objectweb.asm.commons.SimpleRemapper;
 public class Premain {
 
     private static final System.Logger LOGGER = System.getLogger(Premain.class.getName());
+
     enum SetupUIFix {
         AA_TEXT_INFO,
         RENDERING_HINTS
     }
+
     static SetupUIFix UI_FIX_TYPE = SetupUIFix.AA_TEXT_INFO;
 
     private static void openPackagesForModule(String moduleName,
@@ -93,7 +95,7 @@ public class Premain {
                 instrumentation);
         } catch (Exception ignored) {
         }
-        
+
         openPackagesForModule("java.base", Map.of(
             "java.util", Set.of(unnamedModule),
             "java.lang", Set.of(unnamedModule),
@@ -110,7 +112,7 @@ public class Premain {
 
     private static class HolyPatcher implements ClassFileTransformer {
 
-        public static final Map<String, String> RENAMES = Map.of(
+        private static final Map<String, String> RENAMES = Map.of(
             "jdk/nashorn/api/scripting/NashornScriptEngineFactory",
             "org/openjdk/nashorn/api/scripting/NashornScriptEngineFactory",
             "jdk/nashorn/api/scripting/ScriptObjectMirror",
@@ -118,34 +120,32 @@ public class Premain {
             "jdk/nashorn/api/scripting/ClassFilter",
             "org/openjdk/nashorn/api/scripting/ClassFilter"
         );
-        public static final SimpleRemapper REMAPPER = new SimpleRemapper(RENAMES);
+        private static final SimpleRemapper REMAPPER = new SimpleRemapper(RENAMES);
 
         @Override
         public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined,
             ProtectionDomain protectionDomain, byte[] classfileBuffer) {
 
-            switch (className) {
-                case "com/alee/utils/system/JavaVersion":
+            return switch (className) {
+                case "com/alee/utils/system/JavaVersion" -> {
                     try (InputStream inputStream = Premain.class.getResourceAsStream(
                         "/dev/thihup/holy/agent/JavaVersion.class")) {
                         byte[] bytes = Objects.requireNonNull(inputStream).readAllBytes();
-                        return patchClass("com/alee/utils/system/JavaVersion", bytes);
+                        yield patchClass("com/alee/utils/system/JavaVersion", bytes);
                     } catch (Exception e) {
                         System.out.println("[Holyrics Patcher] Failed to patch " + className);
-                        return null;
+                        yield null;
                     }
-                case "com/alee/utils/ProprietaryUtils":
-                case "sun/management/RuntimeImpl":
-                case "jdk/internal/reflect/Reflection":
-                case "sun/font/FontDesignMetrics":
-                case "javax/swing/text/html/HTMLEditorKit":
-                    return patchClass(className, classfileBuffer);
-                case "com/limagiran/util/JavaScriptSecure":
-                case "com/limagiran/util/MyClassFilter":
-                    return remapClass(className, classfileBuffer);
-                default:
-                    return null;
-            }
+                }
+                case "com/alee/utils/ProprietaryUtils",
+                    "sun/management/RuntimeImpl",
+                    "jdk/internal/reflect/Reflection",
+                    "sun/font/FontDesignMetrics",
+                    "javax/swing/text/html/HTMLEditorKit" -> patchClass(className, classfileBuffer);
+                case "com/limagiran/util/JavaScriptSecure", "com/limagiran/util/MyClassFilter" ->
+                    remapClass(className, classfileBuffer);
+                default -> null;
+            };
         }
 
         private byte[] remapClass(String className, byte[] classfileBuffer) {
