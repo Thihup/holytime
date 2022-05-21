@@ -133,7 +133,6 @@ class PatchesVisitor extends ClassVisitor {
 
                     methodVisitor.visitVarInsn(Opcodes.ASTORE, 1);
                     methodVisitor.visitVarInsn(Opcodes.ALOAD, 1);
-                    methodVisitor.visitLdcInsn("-javaagent:patches.jar");
 
                     methodVisitor.visitLdcInsn("-javaagent");
                     methodVisitor.visitInvokeDynamicInsn("test",
