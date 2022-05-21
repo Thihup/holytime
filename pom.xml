@@ -28,7 +28,6 @@
                         <arg>
                             --add-exports=java.base/jdk.internal.org.objectweb.asm.commons=dev.thihup.holy.agent
                         </arg>
-                        <arg>--add-exports=java.desktop/sun.awt=dev.thihup.holy.agent</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
