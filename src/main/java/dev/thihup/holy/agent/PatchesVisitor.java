@@ -165,36 +165,4 @@ class PatchesVisitor extends ClassVisitor {
 
         return methodVisitor;
     }
-
-    @Override
-    public void visitEnd() {
-        if (className.equals("com/alee/utils/system/JavaVersion")) {
-            // JavaVersion(String var) { this(); }
-            MethodVisitor mv = cv.visitMethod(Opcodes.ACC_PUBLIC, "<init>",
-                "(Ljava/lang/String;)V", null, null);
-            mv.visitCode();
-            mv.visitVarInsn(Opcodes.ALOAD, 0);
-            mv.visitMethodInsn(Opcodes.INVOKESPECIAL,
-                "com/alee/utils/system/JavaVersion", "<init>", "()V", false);
-            mv.visitInsn(Opcodes.RETURN);
-            mv.visitMaxs(0, 0);
-            mv.visitEnd();
-
-            // int compareVersion(double var0, int var1, int var2) { return compareTo(var0, var1, var2); }
-            MethodVisitor mv2 = cv.visitMethod(Opcodes.ACC_PUBLIC,
-                "compareVersion", "(DII)I", null, null);
-            mv2.visitCode();
-            mv2.visitVarInsn(Opcodes.ALOAD, 0);
-            mv2.visitVarInsn(Opcodes.DLOAD, 1);
-            mv2.visitVarInsn(Opcodes.ILOAD, 3);
-            mv2.visitVarInsn(Opcodes.ILOAD, 4);
-            mv2.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-                "com/alee/utils/system/JavaVersion", "compareTo", "(DII)I", false);
-            mv2.visitInsn(Opcodes.IRETURN);
-            mv2.visitMaxs(0, 0);
-            mv2.visitEnd();
-        }
-
-        cv.visitEnd();
-    }
 }

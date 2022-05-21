@@ -141,9 +141,7 @@ public class Premain {
                 case "com/alee/utils/system/JavaVersion" -> {
                     try (InputStream inputStream = Premain.class.getResourceAsStream(
                         "/dev/thihup/holy/agent/JavaVersion.class")) {
-                        byte[] bytes = requireNonNull(inputStream).readAllBytes();
-                        yield patchClass("com/alee/utils/system/JavaVersion", bytes,
-                            BytecodeModificationType.PATCH);
+                        yield requireNonNull(inputStream).readAllBytes();
                     } catch (Exception e) {
                         System.out.println("[Holyrics Patcher] Failed to patch " + className);
                         yield null;
