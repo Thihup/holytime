@@ -112,6 +112,8 @@ class PatchesVisitor extends ClassVisitor {
                     // Util.checkMonitorAccess();
                     // var 0 = new ArrayList(jvm.getVmArguments());
                     // 0.removeIf("-javaagent"::startWith);
+                    // 0.removeIf("-agentlib"::startWith);
+                    // 0.removeIf("-agentpath"::startWith);
                     // return Collections.unmodifiableList(0);
 
                     methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "sun/management/Util",
@@ -135,6 +137,25 @@ class PatchesVisitor extends ClassVisitor {
                     methodVisitor.visitVarInsn(Opcodes.ALOAD, 1);
 
                     methodVisitor.visitLdcInsn("-javaagent");
+                    removeIf(methodVisitor);
+
+                    methodVisitor.visitLdcInsn("-agentlib");
+                    removeIf(methodVisitor);
+
+                    methodVisitor.visitLdcInsn("-agentpath");
+                    removeIf(methodVisitor);
+
+                    methodVisitor.visitInsn(Opcodes.POP);
+                    methodVisitor.visitVarInsn(Opcodes.ALOAD, 1);
+                    methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/util/Collections",
+                        "unmodifiableList", "(Ljava/util/List;)Ljava/util/List;", false);
+
+                    methodVisitor.visitInsn(Opcodes.ARETURN);
+                    methodVisitor.visitMaxs(0, 0);
+                    methodVisitor.visitEnd();
+                }
+
+                private void removeIf(MethodVisitor methodVisitor) {
                     methodVisitor.visitInvokeDynamicInsn("test",
                         "(Ljava/lang/String;)Ljava/util/function/Predicate;",
                         new Handle(Opcodes.H_INVOKESTATIC, "java/lang/invoke/LambdaMetafactory",
@@ -150,15 +171,6 @@ class PatchesVisitor extends ClassVisitor {
                     methodVisitor.visitMethodInsn(Opcodes.INVOKEINTERFACE, "java/util/List",
                         "removeIf",
                         "(Ljava/util/function/Predicate;)Z", true);
-
-                    methodVisitor.visitInsn(Opcodes.POP);
-                    methodVisitor.visitVarInsn(Opcodes.ALOAD, 1);
-                    methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/util/Collections",
-                        "unmodifiableList", "(Ljava/util/List;)Ljava/util/List;", false);
-
-                    methodVisitor.visitInsn(Opcodes.ARETURN);
-                    methodVisitor.visitMaxs(0, 0);
-                    methodVisitor.visitEnd();
                 }
             };
         }
