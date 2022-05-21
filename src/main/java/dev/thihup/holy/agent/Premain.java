@@ -1,5 +1,7 @@
 package dev.thihup.holy.agent;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.System.Logger.Level;
@@ -9,9 +11,9 @@ import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 import java.security.ProtectionDomain;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import jdk.internal.org.objectweb.asm.ClassReader;
+import jdk.internal.org.objectweb.asm.ClassVisitor;
 import jdk.internal.org.objectweb.asm.ClassWriter;
 import jdk.internal.org.objectweb.asm.commons.ClassRemapper;
 import jdk.internal.org.objectweb.asm.commons.SimpleRemapper;
@@ -23,6 +25,11 @@ public class Premain {
     enum SetupUIFix {
         AA_TEXT_INFO,
         RENDERING_HINTS
+    }
+
+    enum BytecodeModificationType {
+        REMAP,
+        PATCH
     }
 
     static SetupUIFix UI_FIX_TYPE = SetupUIFix.AA_TEXT_INFO;
@@ -55,12 +62,16 @@ public class Premain {
 
     private static void redefineReflection(Instrumentation inst) {
         try {
+
+            byte[] classfileBuffer = requireNonNull(ClassLoader.getSystemResourceAsStream(
+                "jdk/internal/reflect/Reflection.class")).readAllBytes();
             //noinspection Java9ReflectionClassVisibility
-            inst.redefineClasses(
-                new ClassDefinition(Class.forName("jdk.internal.reflect.Reflection"),
-                    HolyPatcher.patchClass("jdk/internal/reflect/Reflection",
-                        Objects.requireNonNull(ClassLoader.getSystemResourceAsStream(
-                            "jdk/internal/reflect/Reflection.class")).readAllBytes())));
+            ClassDefinition classDefinition = new ClassDefinition(
+                Class.forName("jdk.internal.reflect.Reflection"),
+                HolyPatcher.patchClass("jdk/internal/reflect/Reflection",
+                    classfileBuffer,
+                    BytecodeModificationType.PATCH));
+            inst.redefineClasses(classDefinition);
         } catch (UnmodifiableClassException | ClassNotFoundException | IOException e) {
             LOGGER.log(Level.WARNING,
                 "[Holyrics Patcher] Failed to patch jdk/internal/reflect/Reflection");
@@ -130,8 +141,9 @@ public class Premain {
                 case "com/alee/utils/system/JavaVersion" -> {
                     try (InputStream inputStream = Premain.class.getResourceAsStream(
                         "/dev/thihup/holy/agent/JavaVersion.class")) {
-                        byte[] bytes = Objects.requireNonNull(inputStream).readAllBytes();
-                        yield patchClass("com/alee/utils/system/JavaVersion", bytes);
+                        byte[] bytes = requireNonNull(inputStream).readAllBytes();
+                        yield patchClass("com/alee/utils/system/JavaVersion", bytes,
+                            BytecodeModificationType.PATCH);
                     } catch (Exception e) {
                         System.out.println("[Holyrics Patcher] Failed to patch " + className);
                         yield null;
@@ -141,30 +153,25 @@ public class Premain {
                     "sun/management/RuntimeImpl",
                     "jdk/internal/reflect/Reflection",
                     "sun/font/FontDesignMetrics",
-                    "javax/swing/text/html/HTMLEditorKit" -> patchClass(className, classfileBuffer);
+                    "javax/swing/text/html/HTMLEditorKit" ->
+                    patchClass(className, classfileBuffer, BytecodeModificationType.PATCH);
                 case "com/limagiran/util/JavaScriptSecure", "com/limagiran/util/MyClassFilter" ->
-                    remapClass(className, classfileBuffer);
+                    patchClass(className, classfileBuffer, BytecodeModificationType.REMAP);
                 default -> null;
             };
         }
 
-        private byte[] remapClass(String className, byte[] classfileBuffer) {
-            LOGGER.log(Level.DEBUG, "[Holyrics Patcher] Patching " + className);
-            ClassReader classReader = new ClassReader(classfileBuffer);
-            ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_FRAMES);
-            ClassRemapper classRemapper = new ClassRemapper(classWriter, REMAPPER);
-
-            classReader.accept(classRemapper, 0);
-
-            return classWriter.toByteArray();
-        }
-
-        static byte[] patchClass(String className, byte[] classfileBuffer) {
+        private static byte[] patchClass(String className, byte[] classfileBuffer,
+            BytecodeModificationType changeType) {
             LOGGER.log(Level.DEBUG, "[Holyrics Patcher] Patching " + className);
             ClassReader classReader = new ClassReader(classfileBuffer);
             ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_FRAMES);
 
-            classReader.accept(new PatchesVisitor(className, classWriter), 0);
+            ClassVisitor visitor = switch (changeType) {
+                case REMAP -> new ClassRemapper(classWriter, REMAPPER);
+                case PATCH -> new PatchesVisitor(className, classWriter);
+            };
+            classReader.accept(visitor, 0);
 
             return classWriter.toByteArray();
         }
