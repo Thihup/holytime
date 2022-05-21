@@ -5,6 +5,11 @@ Overall, it works just fine. However, as much of its components were removed fro
 
 (Note that these commands were tried with Linux, for Windows some of them may change a little bit, like from ":" to ";")
 
+## TL;DR
+- Download the Holytime (JDK runtime with all dependencies included)
+- Download the Holy-agent 
+- Run `holytime/bin/java -javaagent:holy-agent.jar -Dsun.java2d.d3d=false -jar Holyrics.jar`
+
 ## Download
 - [Nashorn](https://repo1.maven.org/maven2/org/openjdk/nashorn/nashorn-core/15.3/nashorn-core-15.3.jar) 
 - [ASM](https://repo1.maven.org/maven2/org/ow2/asm/asm/9.2/asm-9.2.jar)
