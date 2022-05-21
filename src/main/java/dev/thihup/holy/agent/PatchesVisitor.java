@@ -10,44 +10,12 @@ import jdk.internal.org.objectweb.asm.MethodVisitor;
 import jdk.internal.org.objectweb.asm.Opcodes;
 import jdk.internal.org.objectweb.asm.Type;
 
-public class PatchesVisitor extends ClassVisitor {
+class PatchesVisitor extends ClassVisitor {
 
     private final String className;
-    private static final int API_VERSION;
+    private static final int API_VERSION = Opcodes.ASM9;
 
-    static {
-        int apiVersion;
-        Class<Opcodes> opcodesClass = Opcodes.class;
-        try {
-            apiVersion = opcodesClass.getDeclaredField("ASM9").getInt(null);
-        } catch (Throwable var1) {
-            try {
-                apiVersion = opcodesClass.getDeclaredField("ASM8").getInt(null);
-            } catch (Throwable var2) {
-                try {
-                    apiVersion = opcodesClass.getDeclaredField("ASM7").getInt(null);
-                } catch (Throwable var3) {
-                    try {
-                        apiVersion = opcodesClass.getDeclaredField("ASM6").getInt(null);
-                    } catch (Throwable var4) {
-                        try {
-                            apiVersion = opcodesClass.getDeclaredField("ASM5").getInt(null);
-                        } catch (Throwable var5) {
-                            try {
-                                apiVersion = opcodesClass.getDeclaredField("ASM4").getInt(null);
-                            } catch (Throwable var6) {
-                                apiVersion = 0;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        API_VERSION = apiVersion;
-    }
-
-    protected PatchesVisitor(String className, ClassVisitor classWriter) {
+    PatchesVisitor(String className, ClassVisitor classWriter) {
         super(API_VERSION, classWriter);
         this.className = className;
     }
