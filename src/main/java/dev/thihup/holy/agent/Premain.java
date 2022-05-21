@@ -72,6 +72,15 @@ public class Premain {
 
         Module unnamedModule = systemClassLoader.getUnnamedModule();
 
+        openPackagesForModule("java.base", Map.of(
+            "java.util", Set.of(unnamedModule),
+            "java.lang", Set.of(unnamedModule),
+            "java.lang.reflect", Set.of(unnamedModule),
+            "java.text", Set.of(unnamedModule),
+            "jdk.internal.org.objectweb.asm", Set.of(unnamedModule),
+            "jdk.internal.org.objectweb.asm.commons", Set.of(unnamedModule)
+        ), instrumentation);
+
         openPackagesForModule("java.desktop", Map.of(
             "java.awt", Set.of(unnamedModule),
             "java.awt.font", Set.of(unnamedModule),
@@ -95,15 +104,6 @@ public class Premain {
                 instrumentation);
         } catch (Exception ignored) {
         }
-
-        openPackagesForModule("java.base", Map.of(
-            "java.util", Set.of(unnamedModule),
-            "java.lang", Set.of(unnamedModule),
-            "java.lang.reflect", Set.of(unnamedModule),
-            "java.text", Set.of(unnamedModule),
-            "jdk.internal.org.objectweb.asm", Set.of(unnamedModule),
-            "jdk.internal.org.objectweb.asm.commons", Set.of(unnamedModule)
-        ), instrumentation);
 
         openPackagesForModule("javafx.web", Map.of(
             "com.sun.webkit.dom", Set.of(unnamedModule)
