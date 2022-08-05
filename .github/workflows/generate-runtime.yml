@@ -68,7 +68,7 @@ jobs:
         with:
             artifacts: "jdk.zip"
             replacesArtifacts: false
-            token: ${{ secrets.TOKEN }}
+            token: ${{ secrets.GITHUB_TOKEN }}
             allowUpdates: true
           
   build-linux:
@@ -124,5 +124,5 @@ jobs:
         with:
             artifacts: "holytime.tar.gz"
             replacesArtifacts: false
-            token: ${{ secrets.TOKEN }}
+            token: ${{ secrets.GITHUB_TOKEN }}
             allowUpdates: true
