@@ -19,11 +19,11 @@ jobs:
           website: jdk.java.net
           release: EA
       - name: Build
-        run: mvn --no-transfer-progress verify
+        run: mvn --no-transfer-progress verify && cp target/holy-agent.jar holy-agent.jar
       - name: Release
         uses: ncipollo/release-action@v1
         with:
-            artifacts: "target/holy-agent.jar"
+            artifacts: "holy-agent.jar"
             replacesArtifacts: false
             tag: latest
             token: ${{ secrets.GITHUB_TOKEN }}
