@@ -20,8 +20,12 @@ jobs:
           release: EA
       - name: Build
         run: mvn --no-transfer-progress verify
-      - name: Upload holy-agent.jar
-        uses: actions/upload-artifact@v3
+      - name: Release
+        uses: ncipollo/release-action@v1
         with:
-          name: holy-agent.jar
-          path: target/holy-agent.jar
+            artifacts: "target/holy-agent.jar"
+            replacesArtifacts: false
+            tag: latest
+            token: ${{ secrets.GITHUB_TOKEN }}
+            allowUpdates: true          
+          
