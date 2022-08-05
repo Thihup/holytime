@@ -61,3 +61,7 @@ jobs:
         with:
           name: holytime
           path: jdk
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: jdk
