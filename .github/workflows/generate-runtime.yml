@@ -1,4 +1,4 @@
-name: Generate Holyrics runtime for Windows x64
+name: Generate Holyrics runtime
 on:
   workflow_dispatch:
     inputs:
