@@ -1,14 +1,18 @@
-# holyrics-newer-java
+# Holytime
 
 Steps to make [Holyrics](https://holyrics.com.br) work with newer Java versions (11/17+).
 Overall, it works just fine. However, as much of its components were removed from standard JDKs, you must put it back to it work as it worked with JDK 8.
+The support for Windows XP was dropped from JDK 9, so only newer Windows version work with it.
+
+This project produces a JLinked Java runtime, called Holytime, with all these steps already done (you can check out the [workflow file](https://github.com/Thihup/holytime/blob/main/.github/workflows/generate-runtime.yml) to see it in details)
 
 (Note that these commands were tried with Linux, for Windows some of them may change a little bit, like from ":" to ";")
 
 ## TL;DR
-- Download the Holytime (JDK runtime with all dependencies included)
-- Download the Holy-agent 
-- Run `holytime/bin/java -javaagent:holy-agent.jar -Dsun.java2d.d3d=false -jar Holyrics.jar`
+- Download the [Holytime](https://github.com/Thihup/holytime/releases) (JDK runtime with all dependencies included)
+- Download the [Holy-agent](https://github.com/Thihup/holy-agent/releases/download/latest/holy-agent.jar)
+- Set the environment variable `J2D_UISCALE` to `96` (to avoid antialiasing issues)
+- Run `holytime/bin/java -javaagent:holy-agent.jar -XX:+AutoCreateSharedArchive -XX:SharedArchiveFile=holytime.cds -XX:+UseStringDeduplication -XX:+UseZGC -Dsun.java2d.d3d=false -jar Holyrics.[jar|exe]`
 
 ## Download
 - [Nashorn](https://repo1.maven.org/maven2/org/openjdk/nashorn/nashorn-core/15.3/nashorn-core-15.3.jar) 
