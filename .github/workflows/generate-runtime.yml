@@ -9,7 +9,7 @@ on:
       javafx_version:
         description: 'JavaFX version'
         required: true
-        default: '18'      
+        default: '19.0.2.1'      
       
 jobs:
   build-windows:
