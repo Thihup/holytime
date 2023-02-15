@@ -27,22 +27,22 @@ jobs:
           mkdir mods
           cd mods
           echo ""
-          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/openjdk/nashorn/nashorn-core/15.3/nashorn-core-15.3.jar -OutFile nashorn-core-15.3.jar
-          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/ow2/asm/asm/9.2/asm-9.2.jar -OutFile asm-9.2.jar
-          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.2/asm-commons-9.2.jar -OutFile asm-commons-9.2.jar
-          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/ow2/asm/asm-tree/9.2/asm-tree-9.2.jar -OutFile asm-tree-9.2.jar
-          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/ow2/asm/asm-analysis/9.2/asm-analysis-9.2.jar -OutFile asm-analysis-9.2.jar
-          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/ow2/asm/asm-util/9.2/asm-util-9.2.jar -OutFile asm-util-9.2.jar
-          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-ri/2.3.6/jaxb-ri-2.3.6.zip -OutFile jaxb-ri-2.3.6.zip
-          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/com/sun/xml/ws/jaxws-ri/2.3.5/jaxws-ri-2.3.5.zip -OutFile jaxws-ri-2.3.5.zip
+          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/openjdk/nashorn/nashorn-core/15.4/nashorn-core-15.4.jar -OutFile nashorn-core-15.4.jar
+          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/ow2/asm/asm/9.4/asm-9.4.jar -OutFile asm-9.4.jar
+          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.4/asm-commons-9.4.jar -OutFile asm-commons-9.4.jar
+          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/ow2/asm/asm-tree/9.4/asm-tree-9.4.jar -OutFile asm-tree-9.4.jar
+          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/ow2/asm/asm-analysis/9.4/asm-analysis-9.4.jar -OutFile asm-analysis-9.4.jar
+          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/ow2/asm/asm-util/9.4/asm-util-9.4.jar -OutFile asm-util-9.4.jar
+          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-ri/2.3.8/jaxb-ri-2.3.8.zip -OutFile jaxb-ri-2.3.8.zip
+          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/com/sun/xml/ws/jaxws-ri/2.3.6/jaxws-ri-2.3.6.zip -OutFile jaxws-ri-2.3.6.zip
           Invoke-WebRequest -Uri https://download2.gluonhq.com/openjfx/${{github.event.inputs.javafx_version}}/openjfx-${{github.event.inputs.javafx_version}}_windows-x64_bin-jmods.zip -OutFile openjfx-${{github.event.inputs.javafx_version}}_windows-x64_bin-jmods.zip
           
 
       - name: Extracting
         run: |
           cd mods
-          Expand-Archive -DestinationPath . -Path jaxb-ri-2.3.6.zip
-          Expand-Archive -DestinationPath . -Path jaxws-ri-2.3.5.zip
+          Expand-Archive -DestinationPath . -Path jaxb-ri-2.3.8.zip
+          Expand-Archive -DestinationPath . -Path jaxws-ri-2.3.6.zip
           Expand-Archive -DestinationPath . -Path openjfx-${{github.event.inputs.javafx_version}}_windows-x64_bin-jmods.zip
           
       - name: Add missing module-info to jakarta.annotation-api.jar
@@ -79,20 +79,20 @@ jobs:
           mkdir mods
           cd mods
           echo ""
-          wget -q https://repo1.maven.org/maven2/org/openjdk/nashorn/nashorn-core/15.3/nashorn-core-15.3.jar
-          wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm/9.2/asm-9.2.jar
-          wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.2/asm-commons-9.2.jar
-          wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm-tree/9.2/asm-tree-9.2.jar
-          wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm-analysis/9.2/asm-analysis-9.2.jar
-          wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm-util/9.2/asm-util-9.2.jar
-          wget -q https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-ri/2.3.6/jaxb-ri-2.3.6.zip
-          wget -q https://repo1.maven.org/maven2/com/sun/xml/ws/jaxws-ri/2.3.5/jaxws-ri-2.3.5.zip
+          wget -q https://repo1.maven.org/maven2/org/openjdk/nashorn/nashorn-core/15.4/nashorn-core-15.4.jar
+          wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm/9.4/asm-9.4.jar
+          wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.4/asm-commons-9.4.jar
+          wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm-tree/9.4/asm-tree-9.4.jar
+          wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm-analysis/9.4/asm-analysis-9.4.jar
+          wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm-util/9.4/asm-util-9.4.jar
+          wget -q https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-ri/2.3.8/jaxb-ri-2.3.8.zip
+          wget -q https://repo1.maven.org/maven2/com/sun/xml/ws/jaxws-ri/2.3.6/jaxws-ri-2.3.6.zip
           wget -q https://download2.gluonhq.com/openjfx/${{github.event.inputs.javafx_version}}/openjfx-${{github.event.inputs.javafx_version}}_linux-x64_bin-jmods.zip
       - name: Extracting
         run: |
           cd mods
-          unzip -d . jaxb-ri-2.3.6.zip
-          unzip -d . jaxws-ri-2.3.5.zip
+          unzip -d . jaxb-ri-2.3.8.zip
+          unzip -d . jaxws-ri-2.3.6.zip
           unzip -d . openjfx-${{github.event.inputs.javafx_version}}_linux-x64_bin-jmods.zip
           
       - name: Add missing module-info to jakarta.annotation-api.jar
