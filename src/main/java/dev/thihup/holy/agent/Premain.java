@@ -129,7 +129,9 @@ public class Premain {
             "jdk/nashorn/api/scripting/ScriptObjectMirror",
             "org/openjdk/nashorn/api/scripting/ScriptObjectMirror",
             "jdk/nashorn/api/scripting/ClassFilter",
-            "org/openjdk/nashorn/api/scripting/ClassFilter"
+            "org/openjdk/nashorn/api/scripting/ClassFilter",
+            "jdk/nashorn/internal/objects/Global",
+            "org/openjdk/nashorn/internal/objects/Global"
         );
         private static final SimpleRemapper REMAPPER = new SimpleRemapper(RENAMES);
 
@@ -153,7 +155,10 @@ public class Premain {
                     "sun/font/FontDesignMetrics",
                     "javax/swing/text/html/HTMLEditorKit" ->
                     patchClass(className, classfileBuffer, BytecodeModificationType.PATCH);
-                case "com/limagiran/util/JavaScriptSecure", "com/limagiran/util/MyClassFilter" ->
+                case "com/limagiran/util/JavaScriptSecure", 
+                     "com/limagiran/util/MyClassFilter",
+                     "com/limagiran/js/JSUtils",
+                     "com/limagiran/holyrics/js/JSLibHolyrics" ->
                     patchClass(className, classfileBuffer, BytecodeModificationType.REMAP);
                 default -> null;
             };
