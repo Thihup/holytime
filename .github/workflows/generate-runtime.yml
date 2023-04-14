@@ -6,10 +6,6 @@ on:
         description: 'JDK version'
         default: 'GA'
         required: true
-      javafx_version:
-        description: 'JavaFX version'
-        required: true
-        default: '20'      
       
 jobs:
   build-windows:
@@ -22,45 +18,15 @@ jobs:
         with:
           website: jdk.java.net
           release: ${{ github.event.inputs.runtime_version }} 
-      - name: Download dependencies
-        run: |
-          mkdir mods
-          cd mods
-          echo ""
-          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/openjdk/nashorn/nashorn-core/15.4/nashorn-core-15.4.jar -OutFile nashorn-core-15.4.jar
-          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/ow2/asm/asm/9.5/asm-9.5.jar -OutFile asm-9.5.jar
-          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.5/asm-commons-9.5.jar -OutFile asm-commons-9.5.jar
-          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/ow2/asm/asm-tree/9.5/asm-tree-9.5.jar -OutFile asm-tree-9.5.jar
-          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/ow2/asm/asm-analysis/9.5/asm-analysis-9.5.jar -OutFile asm-analysis-9.5.jar
-          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/ow2/asm/asm-util/9.5/asm-util-9.5.jar -OutFile asm-util-9.5.jar
-          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-ri/2.3.8/jaxb-ri-2.3.8.zip -OutFile jaxb-ri-2.3.8.zip
-          Invoke-WebRequest -Uri https://repo1.maven.org/maven2/com/sun/xml/ws/jaxws-ri/2.3.6/jaxws-ri-2.3.6.zip -OutFile jaxws-ri-2.3.6.zip
-          Invoke-WebRequest -Uri https://download2.gluonhq.com/openjfx/${{github.event.inputs.javafx_version}}/openjfx-${{github.event.inputs.javafx_version}}_windows-x64_bin-jmods.zip -OutFile openjfx-${{github.event.inputs.javafx_version}}_windows-x64_bin-jmods.zip
-          
-
-      - name: Extracting
-        run: |
-          cd mods
-          Expand-Archive -DestinationPath . -Path jaxb-ri-2.3.8.zip
-          Expand-Archive -DestinationPath . -Path jaxws-ri-2.3.6.zip
-          Expand-Archive -DestinationPath . -Path openjfx-${{github.event.inputs.javafx_version}}_windows-x64_bin-jmods.zip
-          
-      - name: Add missing module-info to jakarta.annotation-api.jar
-        run: |
-          cd mods
-          jdeps --generate-module-info tmp ./jaxws-ri/lib/jakarta.annotation-api.jar
-          javac --patch-module=java.annotation=jaxws-ri/lib/jakarta.annotation-api.jar ./tmp/java.annotation/module-info.java
-          jar uf ./jaxws-ri/lib/jakarta.annotation-api.jar -C ./tmp/java.annotation/ module-info.class
       - name: Generate runtime
         run: |
-          jlink --module-path 'mods;mods/javafx-jmods-${{github.event.inputs.javafx_version}};mods/jaxb-ri/mod;mods/jaxws-ri/lib' --add-modules ALL-MODULE-PATH,java.base,java.compiler,java.datatransfer,java.desktop,java.instrument,java.logging,java.management,java.management.rmi,java.naming,java.net.http,java.prefs,java.rmi,java.scripting,java.se,java.security.jgss,java.security.sasl,java.smartcardio,java.sql,java.sql.rowset,java.transaction.xa,java.xml,java.xml.crypto,jdk.accessibility,jdk.charsets,jdk.crypto.cryptoki,jdk.crypto.ec,jdk.dynalink,jdk.httpserver,jdk.internal.vm.ci,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management,jdk.jdwp.agent,jdk.jfr,jdk.jsobject,jdk.localedata,jdk.management,jdk.management.agent,jdk.management.jfr,jdk.naming.dns,jdk.naming.rmi,jdk.net,jdk.nio.mapmode,jdk.sctp,jdk.security.auth,jdk.security.jgss,jdk.unsupported,jdk.xml.dom,jdk.zipfs --output jdk --compress 2 --generate-cds-archive -G
-          Compress-Archive -Path jdk -DestinationPath holytime-windows
+          ./generate-runtime-windows.ps1
       - name: Release
         uses: ncipollo/release-action@v1
         with:
             artifacts: "holytime-windows.zip"
             replacesArtifacts: false
-            tag: Holytime-JDK-${{ github.event.inputs.runtime_version }}-FX-${{github.event.inputs.javafx_version}}
+            tag: Holytime-JDK-${{ github.event.inputs.runtime_version }}
             token: ${{ secrets.GITHUB_TOKEN }}
             allowUpdates: true
           
@@ -74,42 +40,14 @@ jobs:
         with:
           website: jdk.java.net
           release: ${{ github.event.inputs.runtime_version }} 
-      - name: Download dependencies
-        run: |
-          mkdir mods
-          cd mods
-          echo ""
-          wget -q https://repo1.maven.org/maven2/org/openjdk/nashorn/nashorn-core/15.4/nashorn-core-15.4.jar
-          wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm/9.5/asm-9.5.jar
-          wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.5/asm-commons-9.5.jar
-          wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm-tree/9.5/asm-tree-9.5.jar
-          wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm-analysis/9.5/asm-analysis-9.5.jar
-          wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm-util/9.5/asm-util-9.5.jar
-          wget -q https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-ri/2.3.8/jaxb-ri-2.3.8.zip
-          wget -q https://repo1.maven.org/maven2/com/sun/xml/ws/jaxws-ri/2.3.6/jaxws-ri-2.3.6.zip
-          wget -q https://download2.gluonhq.com/openjfx/${{github.event.inputs.javafx_version}}/openjfx-${{github.event.inputs.javafx_version}}_linux-x64_bin-jmods.zip
-      - name: Extracting
-        run: |
-          cd mods
-          unzip -d . jaxb-ri-2.3.8.zip
-          unzip -d . jaxws-ri-2.3.6.zip
-          unzip -d . openjfx-${{github.event.inputs.javafx_version}}_linux-x64_bin-jmods.zip
-          
-      - name: Add missing module-info to jakarta.annotation-api.jar
-        run: |
-          cd mods
-          jdeps --generate-module-info tmp ./jaxws-ri/lib/jakarta.annotation-api.jar
-          javac --patch-module=java.annotation=jaxws-ri/lib/jakarta.annotation-api.jar ./tmp/java.annotation/module-info.java
-          jar uf ./jaxws-ri/lib/jakarta.annotation-api.jar -C ./tmp/java.annotation/ module-info.class
       - name: Generate runtime
         run: |
-          jlink --module-path mods:mods/javafx-jmods-${{github.event.inputs.javafx_version}}:mods/jaxb-ri/mod:mods/jaxws-ri/lib --add-modules ALL-MODULE-PATH,java.base,java.compiler,java.datatransfer,java.desktop,java.instrument,java.logging,java.management,java.management.rmi,java.naming,java.net.http,java.prefs,java.rmi,java.scripting,java.se,java.security.jgss,java.security.sasl,java.smartcardio,java.sql,java.sql.rowset,java.transaction.xa,java.xml,java.xml.crypto,jdk.accessibility,jdk.charsets,jdk.crypto.cryptoki,jdk.crypto.ec,jdk.dynalink,jdk.httpserver,jdk.internal.vm.ci,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management,jdk.jdwp.agent,jdk.jfr,jdk.jsobject,jdk.localedata,jdk.management,jdk.management.agent,jdk.management.jfr,jdk.naming.dns,jdk.naming.rmi,jdk.net,jdk.nio.mapmode,jdk.sctp,jdk.security.auth,jdk.security.jgss,jdk.unsupported,jdk.xml.dom,jdk.zipfs --output jdk --compress 2 --generate-cds-archive -G
-          tar -czvf holytime-linux.tar.gz jdk
+          bash ./generate-runtime-linux.sh
       - name: Release
         uses: ncipollo/release-action@v1
         with:
             artifacts: "holytime-linux.tar.gz"
             replacesArtifacts: false
-            tag: Holytime-JDK-${{ github.event.inputs.runtime_version }}-FX-${{github.event.inputs.javafx_version}}
+            tag: Holytime-JDK-${{ github.event.inputs.runtime_version }}
             token: ${{ secrets.GITHUB_TOKEN }}
             allowUpdates: true
