@@ -29,5 +29,5 @@ jar uf ./jaxws-ri/lib/jakarta.annotation-api.jar -C ./tmp/java.annotation/ modul
 
 echo "Generating runtime"
 cd ..
-jlink --module-path mods:mods/javafx-jmods-$openjfx_version:mods/jaxb-ri/mod:mods/jaxws-ri/lib --add-modules $modules --output "jdk-linux" --compress 2 --generate-cds-archive -G
+jlink --module-path mods:mods/javafx-jmods-$openjfx_version:mods/jaxb-ri/mod:mods/jaxws-ri/lib --add-modules $modules --output "jdk-linux" --compress 2 --generate-cds-archive
 tar -czf holytime-linux.tar.gz jdk-linux && echo "Generated runtime --> $PWD/holytime-linux.tar.gz"
