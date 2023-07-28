@@ -4,7 +4,7 @@ on:
     inputs:
       runtime_version:
         description: 'JDK version'
-        default: 'GA'
+        default: '20'
         required: true
       
 jobs:
@@ -13,11 +13,11 @@ jobs:
     steps:
       - name: Checkout Sources
         uses: actions/checkout@v1
-      - name: 'Set up JDK ${{ github.event.inputs.runtime_version }}'
-        uses: oracle-actions/setup-java@v1
+      - name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
         with:
-          website: jdk.java.net
-          release: ${{ github.event.inputs.runtime_version }} 
+          java-version: ${{ github.event.inputs.runtime_version }}'
+          distribution: 'graalvm'        
       - name: Generate runtime
         run: |
           ./generate-runtime-windows.ps1
@@ -35,11 +35,10 @@ jobs:
     steps:
       - name: Checkout Sources
         uses: actions/checkout@v1
-      - name: 'Set up JDK ${{ github.event.inputs.runtime_version }}'
-        uses: oracle-actions/setup-java@v1
+      - uses: graalvm/setup-graalvm@v1
         with:
-          website: jdk.java.net
-          release: ${{ github.event.inputs.runtime_version }} 
+          java-version: ${{ github.event.inputs.runtime_version }}'
+          distribution: 'graalvm'
       - name: Generate runtime
         run: |
           bash ./generate-runtime-linux.sh
