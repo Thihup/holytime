@@ -39,14 +39,12 @@ Silence {
     Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/ow2/asm/asm-tree/$($Dependencies.asm_version)/asm-tree-$($Dependencies.asm_version).jar -OutFile asm-tree-$($Dependencies.asm_version).jar
     Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/ow2/asm/asm-analysis/$($Dependencies.asm_version)/asm-analysis-$($Dependencies.asm_version).jar -OutFile asm-analysis-$($Dependencies.asm_version).jar
     Invoke-WebRequest -Uri https://repo1.maven.org/maven2/org/ow2/asm/asm-util/$($Dependencies.asm_version)/asm-util-$($Dependencies.asm_version).jar -OutFile asm-util-$($Dependencies.asm_version).jar
-    Invoke-WebRequest -Uri https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-ri/$($Dependencies.jaxb_version)/jaxb-ri-$($Dependencies.jaxb_version).zip -OutFile jaxb-ri.zip
     Invoke-WebRequest -Uri https://repo1.maven.org/maven2/com/sun/xml/ws/jaxws-ri/$($Dependencies.jaxws_version)/jaxws-ri-$($Dependencies.jaxws_version).zip -OutFile jaxws-ri.zip
     Invoke-WebRequest -Uri https://download2.gluonhq.com/openjfx/$($Dependencies.openjfx_version)/openjfx-$($Dependencies.openjfx_version)_windows-x64_bin-jmods.zip -OutFile openjfx_windows-x64_bin-jmods.zip
 }
 
 echo "Extracting"
 Silence {
-    Expand-Archive -DestinationPath . -Path jaxb-ri.zip
     Expand-Archive -DestinationPath . -Path jaxws-ri.zip
     Expand-Archive -DestinationPath . -Path openjfx_windows-x64_bin-jmods.zip
 }
@@ -59,8 +57,8 @@ jar uf ./jaxws-ri/lib/jakarta.annotation-api.jar -C ./tmp/java.annotation/ modul
 
 echo "Generating runtime"
 cd ..
-jlink --module-path "mods;mods/javafx-jmods-$($Dependencies.openjfx_version);mods/jaxb-ri/mod;mods/jaxws-ri/lib" --add-modules $($Dependencies.modules) --output jdk-windows --compress zip-6 --generate-cds-archive --strip-debug
+jlink --module-path "mods;mods/javafx-jmods-$($Dependencies.openjfx_version);mods/jaxws-ri/lib" --add-modules $($Dependencies.modules) --output holytime --compress zip-6 --generate-cds-archive --strip-debug
 
 Silence {
-    Compress-Archive -Path jdk-windows -DestinationPath holytime-windows && echo "Generated runtime --> $(PWD)\holytime-windows.zip"
+    Compress-Archive -Path holytime -DestinationPath holytime-windows && echo "Generated runtime --> $(PWD)\holytime-windows.zip"
 }

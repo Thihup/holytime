@@ -11,13 +11,11 @@ wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/$asm_version/asm-
 wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm-tree/$asm_version/asm-tree-$asm_version.jar
 wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm-analysis/$asm_version/asm-analysis-$asm_version.jar
 wget -q https://repo1.maven.org/maven2/org/ow2/asm/asm-util/$asm_version/asm-util-$asm_version.jar
-wget -q -O jaxb-ri.zip https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-ri/$jaxb_version/jaxb-ri-$jaxb_version.zip
 wget -q -O jaxws-ri.zip https://repo1.maven.org/maven2/com/sun/xml/ws/jaxws-ri/$jaxws_version/jaxws-ri-$jaxws_version.zip
 wget -q -O openjfx_linux-x64_bin-jmods.zip https://download2.gluonhq.com/openjfx/$openjfx_version/openjfx-${openjfx_version}_linux-x64_bin-jmods.zip
     
 echo "Extracting"
 
-unzip -d . -q jaxb-ri.zip
 unzip -d . -q jaxws-ri.zip
 unzip -d . -q openjfx_linux-x64_bin-jmods.zip
 
@@ -29,5 +27,5 @@ jar uf ./jaxws-ri/lib/jakarta.annotation-api.jar -C ./tmp/java.annotation/ modul
 
 echo "Generating runtime"
 cd ..
-jlink --module-path mods:mods/javafx-jmods-$openjfx_version:mods/jaxb-ri/mod:mods/jaxws-ri/lib --add-modules $modules --output "jdk-linux" --compress zip-6 --generate-cds-archive --strip-debug
-tar -czf holytime-linux.tar.gz jdk-linux && echo "Generated runtime --> $PWD/holytime-linux.tar.gz"
+jlink --module-path mods:mods/javafx-jmods-$openjfx_version:mods/jaxws-ri/lib --add-modules $modules --output "holytime" --compress zip-6 --generate-cds-archive --strip-debug
+tar -czf holytime-linux.tar.gz holytime && echo "Generated runtime --> $PWD/holytime-linux.tar.gz"
