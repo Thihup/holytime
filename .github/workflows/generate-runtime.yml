@@ -20,7 +20,7 @@ jobs:
           distribution: 'graalvm'        
       - name: Generate runtime
         run: |
-          ./generate-runtime-windows.ps1
+          jshell --enable-preview generate-runtime.jsh
       - name: Release
         uses: ncipollo/release-action@v1
         with:
@@ -41,11 +41,11 @@ jobs:
           distribution: 'graalvm'
       - name: Generate runtime
         run: |
-          bash ./generate-runtime-linux.sh
+          jshell --enable-preview generate-runtime.jsh
       - name: Release
         uses: ncipollo/release-action@v1
         with:
-            artifacts: "holytime-linux.tar.gz"
+            artifacts: "holytime-linux.zip"
             replacesArtifacts: false
             tag: Holytime-JDK-${{ github.event.inputs.runtime_version }}
             token: ${{ secrets.GITHUB_TOKEN }}
