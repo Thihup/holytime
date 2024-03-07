@@ -32,12 +32,12 @@ String osArch = System.getProperty("os.arch").contains("64") ? "x64" : "x86";
 var dependencies = loadProperties("dependencies.properties");
 
 System.out.println("Downloading dependencies");
+
+for (String dep : List.of("asm", "asm-commons", "asm-tree", "asm-analysis", "asm-util")) {
+    downloadFile(STR."https://repo1.maven.org/maven2/org/ow2/asm/\{dep}/\{dependencies.get("asm_version")}/\{dep}-\{dependencies.get("asm_version")}.jar", STR."mods/\{dep}.jar");
+}
+
 downloadFile(STR."https://repo1.maven.org/maven2/org/openjdk/nashorn/nashorn-core/\{dependencies.get("nashorn_version")}/nashorn-core-\{dependencies.get("nashorn_version")}.jar", "mods/nashorn-core.jar");
-downloadFile(STR."https://repo1.maven.org/maven2/org/ow2/asm/asm/\{dependencies.get("asm_version")}/asm-\{dependencies.get("asm_version")}.jar", "mods/asm.jar");
-downloadFile(STR."https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/\{dependencies.get("asm_version")}/asm-commons-\{dependencies.get("asm_version")}.jar", "mods/asm-commons.jar");
-downloadFile(STR."https://repo1.maven.org/maven2/org/ow2/asm/asm-tree/\{dependencies.get("asm_version")}/asm-tree-\{dependencies.get("asm_version")}.jar", "mods/asm-tree.jar");
-downloadFile(STR."https://repo1.maven.org/maven2/org/ow2/asm/asm-analysis/\{dependencies.get("asm_version")}/asm-analysis-\{dependencies.get("asm_version")}.jar", "mods/asm-analysis.jar");
-downloadFile(STR."https://repo1.maven.org/maven2/org/ow2/asm/asm-util/\{dependencies.get("asm_version")}/asm-util-\{dependencies.get("asm_version")}.jar", "mods/asm-util.jar");
 downloadFile(STR."https://repo1.maven.org/maven2/com/sun/xml/ws/jaxws-ri/\{dependencies.get("jaxws_version")}/jaxws-ri-\{dependencies.get("jaxws_version")}.zip", "mods/jaxws-ri.zip");
 downloadFile(STR."https://download2.gluonhq.com/openjfx/\{dependencies.get("openjfx_version")}/openjfx-\{dependencies.get("openjfx_version")}_\{osName}-\{osArch}_bin-jmods.zip", "mods/openjfx-jmods.zip");
 
