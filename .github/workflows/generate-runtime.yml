@@ -20,7 +20,7 @@ jobs:
           distribution: 'graalvm'        
       - name: Generate runtime
         run: |
-          jshell --enable-preview generate-runtime.jsh
+          mvn package
       - name: Release
         uses: ncipollo/release-action@v1
         with:
@@ -41,7 +41,7 @@ jobs:
           distribution: 'graalvm'
       - name: Generate runtime
         run: |
-          jshell --enable-preview generate-runtime.jsh
+          mvn package
       - name: Release
         uses: ncipollo/release-action@v1
         with:
