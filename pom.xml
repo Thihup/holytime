@@ -20,11 +20,14 @@
         <javafx.version>22</javafx.version>
         <jaxws.rt.version>2.3.7</jaxws.rt.version>
         <jakarta.annotation-api>1.3.5</jakarta.annotation-api>
-        <maven.compiler.source>23</maven.compiler.source>
-        <maven.compiler.target>23</maven.compiler.target>
         <xstream.version>1.4.20</xstream.version>
         <dom4j.version>2.1.4</dom4j.version>
         <commons-imaging.version>1.0.0-alpha5</commons-imaging.version>
+        <java-image-scaling.version>0.8.6</java-image-scaling.version>
+        <rsyntaxtextarea.version>3.4.0</rsyntaxtextarea.version>
+        <jericho-html.version>3.3</jericho-html.version>
+        <weblaf.version>1.29</weblaf.version>
+        <dependencies.folder>${project.build.directory}/dependency</dependencies.folder>
     </properties>
     <dependencies>
         <dependency>
@@ -107,29 +110,78 @@
             <artifactId>commons-imaging</artifactId>
             <version>${commons-imaging.version}</version>
         </dependency>
+
+        <!-- WebLaf 1.29 dependencies-->
+        <!-- https://web.archive.org/web/20160322222125if_/http://weblookandfeel.com/downloads/prerelease/weblaf-1.29.jar -->
+        <!--
+            Holyrics uses the weblaf-complete-1.29.jar which include the shades the dependencies.
+            Here we only include the weblaf-1.29.jar without the dependencies to be able to
+            override the versions individually of each dependency (like XStream)
+          -->
+        <dependency>
+            <groupId>com.weblookandfeel</groupId>
+            <artifactId>weblaf</artifactId>
+            <version>${weblaf.version}</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/weblaf-${weblaf.version}.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.mortennobel</groupId>
+            <artifactId>java-image-scaling</artifactId>
+            <version>${java-image-scaling.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.jhlabs</groupId>
+                    <artifactId>filters</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>net.htmlparser.jericho</groupId>
+            <artifactId>jericho-html</artifactId>
+            <version>${jericho-html.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fifesoft</groupId>
+            <artifactId>rsyntaxtextarea</artifactId>
+            <version>${rsyntaxtextarea.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>${xstream.version}</version>
+            <optional>false</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.github.x-stream</groupId>
+                    <artifactId>mxparser</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>org.dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>${dom4j.version}</version>
+            <optional>false</optional>
         </dependency>
     </dependencies>
 
     <build>
         <finalName>holytime</finalName>
         <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <version>3.6.1</version>
-            <executions>
-                <execution>
-                    <id>copy-dependencies</id>
-                    <goals>
-                        <goal>copy-dependencies</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -149,7 +201,7 @@
                             <excludeDefaultDirectories>true</excludeDefaultDirectories>
                             <filesets>
                                 <fileset>
-                                    <directory>${project.build.directory}/dependency</directory>
+                                    <directory>${dependencies.folder}</directory>
                                     <includes>
                                         <include>javafx-base-${javafx.version}.jar</include>
                                         <include>javafx-controls-${javafx.version}.jar</include>
@@ -186,7 +238,7 @@
                             <goal>add-module-info</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+                            <outputDirectory>${dependencies.folder}</outputDirectory>
                             <overwriteExistingFiles>true</overwriteExistingFiles>
                             <modules>
                                 <module>
@@ -197,9 +249,9 @@
                                     </artifact>
                                     <moduleInfoSource>
                                         module java.annotation {
-                                            exports javax.annotation;
-                                            exports javax.annotation.security;
-                                            exports javax.annotation.sql;
+                                        exports javax.annotation;
+                                        exports javax.annotation.security;
+                                        exports javax.annotation.sql;
                                         }
                                     </moduleInfoSource>
                                 </module>
@@ -230,6 +282,238 @@
                                         }
                                     </moduleInfoSource>
                                 </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>com.mortennobel</groupId>
+                                        <artifactId>java-image-scaling</artifactId>
+                                        <version>${java-image-scaling.version}</version>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module com.mortennobel.java.image.scaling {
+                                        requires transitive java.desktop;
+
+                                        exports com.mortennobel.imagescaling;
+                                        exports com.mortennobel.imagescaling.experimental;
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>com.thoughtworks.xstream</groupId>
+                                        <artifactId>xstream</artifactId>
+                                        <version>${xstream.version}</version>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module com.thoughtworks.xstream {
+                                        requires com.ctc.wstx;
+                                        requires jakarta.activation;
+                                        requires java.sql;
+                                        requires java.xml.bind;
+                                        requires transitive java.desktop;
+                                        requires transitive java.xml;
+                                        requires transitive jdk.unsupported;
+                                        requires transitive org.dom4j;
+                                        exports com.thoughtworks.xstream;
+                                        exports com.thoughtworks.xstream.annotations;
+                                        exports com.thoughtworks.xstream.converters;
+                                        exports com.thoughtworks.xstream.converters.basic;
+                                        exports com.thoughtworks.xstream.converters.collections;
+                                        exports com.thoughtworks.xstream.converters.enums;
+                                        exports com.thoughtworks.xstream.converters.extended;
+                                        exports com.thoughtworks.xstream.converters.javabean;
+                                        exports com.thoughtworks.xstream.converters.reflection;
+                                        exports com.thoughtworks.xstream.converters.time;
+                                        exports com.thoughtworks.xstream.core;
+                                        exports com.thoughtworks.xstream.core.util;
+                                        exports com.thoughtworks.xstream.io;
+                                        exports com.thoughtworks.xstream.io.binary;
+                                        exports com.thoughtworks.xstream.io.copy;
+                                        exports com.thoughtworks.xstream.io.json;
+                                        exports com.thoughtworks.xstream.io.naming;
+                                        exports com.thoughtworks.xstream.io.path;
+                                        exports com.thoughtworks.xstream.io.xml;
+                                        exports com.thoughtworks.xstream.io.xml.xppdom;
+                                        exports com.thoughtworks.xstream.mapper;
+                                        exports com.thoughtworks.xstream.persistence;
+                                        exports com.thoughtworks.xstream.security;
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>com.fifesoft</groupId>
+                                        <artifactId>rsyntaxtextarea</artifactId>
+                                        <version>${rsyntaxtextarea.version}</version>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module org.fife.RSyntaxTextArea {
+                                        requires transitive java.datatransfer;
+                                        requires transitive java.desktop;
+                                        requires transitive java.xml;
+                                        exports org.fife.io;
+                                        exports org.fife.print;
+                                        exports org.fife.ui.rsyntaxtextarea;
+                                        exports org.fife.ui.rsyntaxtextarea.focusabletip;
+                                        exports org.fife.ui.rsyntaxtextarea.folding;
+                                        exports org.fife.ui.rsyntaxtextarea.modes;
+                                        exports org.fife.ui.rsyntaxtextarea.parser;
+                                        exports org.fife.ui.rsyntaxtextarea.templates;
+                                        exports org.fife.ui.rtextarea;
+                                        exports org.fife.util;
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>net.htmlparser.jericho</groupId>
+                                        <artifactId>jericho-html</artifactId>
+                                        <version>${jericho-html.version}</version>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module net.htmlparser.jericho.html {
+                                        requires org.slf4j;
+                                        requires transitive java.logging;
+                                        exports net.htmlparser.jericho;
+                                        exports net.htmlparser.jericho.nodoc;
+                                        }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <file>${dependencies.folder}/weblaf-${weblaf.version}.jar</file>
+                                    <version>${weblaf.version}</version>
+                                    <moduleInfoSource>
+                                        open module com.alee.weblaf {
+                                        requires com.mortennobel.java.image.scaling;
+                                        requires java.management;
+                                        requires java.sql;
+                                        requires transitive java.datatransfer;
+                                        requires transitive java.desktop;
+                                        requires transitive net.htmlparser.jericho.html;
+                                        requires transitive org.fife.RSyntaxTextArea;
+                                        requires transitive org.slf4j;
+                                        requires transitive com.thoughtworks.xstream;
+                                        exports com.alee.extended.breadcrumb;
+                                        exports com.alee.extended.button;
+                                        exports com.alee.extended.checkbox;
+                                        exports com.alee.extended.colorchooser;
+                                        exports com.alee.extended.date;
+                                        exports com.alee.extended.dock;
+                                        exports com.alee.extended.drag;
+                                        exports com.alee.extended.filechooser;
+                                        exports com.alee.extended.hotkey;
+                                        exports com.alee.extended.icon;
+                                        exports com.alee.extended.image;
+                                        exports com.alee.extended.label;
+                                        exports com.alee.extended.language;
+                                        exports com.alee.extended.layout;
+                                        exports com.alee.extended.list;
+                                        exports com.alee.extended.menu;
+                                        exports com.alee.extended.ninepatch;
+                                        exports com.alee.extended.optionpane;
+                                        exports com.alee.extended.painter;
+                                        exports com.alee.extended.panel;
+                                        exports com.alee.extended.progress;
+                                        exports com.alee.extended.statusbar;
+                                        exports com.alee.extended.style;
+                                        exports com.alee.extended.syntax;
+                                        exports com.alee.extended.tab;
+                                        exports com.alee.extended.time;
+                                        exports com.alee.extended.transition;
+                                        exports com.alee.extended.transition.effects;
+                                        exports com.alee.extended.transition.effects.blocks;
+                                        exports com.alee.extended.transition.effects.curtain;
+                                        exports com.alee.extended.transition.effects.fade;
+                                        exports com.alee.extended.transition.effects.slide;
+                                        exports com.alee.extended.transition.effects.zoom;
+                                        exports com.alee.extended.tree;
+                                        exports com.alee.extended.tree.sample;
+                                        exports com.alee.extended.window;
+                                        exports com.alee.global;
+                                        exports com.alee.graphics.filters;
+                                        exports com.alee.graphics.image.gif;
+                                        exports com.alee.graphics.shapes;
+                                        exports com.alee.graphics.strokes;
+                                        exports com.alee.laf;
+                                        exports com.alee.laf.button;
+                                        exports com.alee.laf.checkbox;
+                                        exports com.alee.laf.colorchooser;
+                                        exports com.alee.laf.combobox;
+                                        exports com.alee.laf.desktoppane;
+                                        exports com.alee.laf.filechooser;
+                                        exports com.alee.laf.label;
+                                        exports com.alee.laf.list;
+                                        exports com.alee.laf.list.editor;
+                                        exports com.alee.laf.menu;
+                                        exports com.alee.laf.optionpane;
+                                        exports com.alee.laf.panel;
+                                        exports com.alee.laf.progressbar;
+                                        exports com.alee.laf.radiobutton;
+                                        exports com.alee.laf.rootpane;
+                                        exports com.alee.laf.scroll;
+                                        exports com.alee.laf.separator;
+                                        exports com.alee.laf.slider;
+                                        exports com.alee.laf.spinner;
+                                        exports com.alee.laf.splitpane;
+                                        exports com.alee.laf.tabbedpane;
+                                        exports com.alee.laf.table;
+                                        exports com.alee.laf.table.editors;
+                                        exports com.alee.laf.table.renderers;
+                                        exports com.alee.laf.text;
+                                        exports com.alee.laf.toolbar;
+                                        exports com.alee.laf.tooltip;
+                                        exports com.alee.laf.tree;
+                                        exports com.alee.laf.viewport;
+                                        exports com.alee.managers;
+                                        exports com.alee.managers.drag;
+                                        exports com.alee.managers.effects;
+                                        exports com.alee.managers.focus;
+                                        exports com.alee.managers.glasspane;
+                                        exports com.alee.managers.help;
+                                        exports com.alee.managers.highlight;
+                                        exports com.alee.managers.hotkey;
+                                        exports com.alee.managers.language;
+                                        exports com.alee.managers.language.data;
+                                        exports com.alee.managers.language.updaters;
+                                        exports com.alee.managers.log;
+                                        exports com.alee.managers.notification;
+                                        exports com.alee.managers.plugin;
+                                        exports com.alee.managers.plugin.data;
+                                        exports com.alee.managers.popup;
+                                        exports com.alee.managers.proxy;
+                                        exports com.alee.managers.settings;
+                                        exports com.alee.managers.settings.processors;
+                                        exports com.alee.managers.style;
+                                        exports com.alee.managers.style.data;
+                                        exports com.alee.managers.style.skin;
+                                        exports com.alee.managers.style.skin.ninepatch;
+                                        exports com.alee.managers.style.skin.web;
+                                        exports com.alee.managers.task;
+                                        exports com.alee.managers.tooltip;
+                                        exports com.alee.managers.version;
+                                        exports com.alee.utils;
+                                        exports com.alee.utils.collection;
+                                        exports com.alee.utils.compare;
+                                        exports com.alee.utils.concurrent;
+                                        exports com.alee.utils.drag;
+                                        exports com.alee.utils.encryption;
+                                        exports com.alee.utils.file;
+                                        exports com.alee.utils.filefilter;
+                                        exports com.alee.utils.font;
+                                        exports com.alee.utils.general;
+                                        exports com.alee.utils.laf;
+                                        exports com.alee.utils.map;
+                                        exports com.alee.utils.ninepatch;
+                                        exports com.alee.utils.reflection;
+                                        exports com.alee.utils.sort;
+                                        exports com.alee.utils.swing;
+                                        exports com.alee.utils.swing.menu;
+                                        exports com.alee.utils.system;
+                                        exports com.alee.utils.text;
+                                        exports com.alee.utils.xml;
+                                        exports com.alee.utils.zip;
+                                        }
+                                    </moduleInfoSource>
+                                </module>
                             </modules>
                         </configuration>
                     </execution>
@@ -253,9 +537,11 @@
                             <failOnError>true</failOnError>
                             <args>
                                 <arg>--module-path</arg>
-                                <arg>${project.build.directory}/dependency</arg>
+                                <arg>${dependencies.folder}</arg>
                                 <arg>--add-modules</arg>
-                                <arg>ALL-MODULE-PATH,java.se,jdk.accessibility,jdk.charsets,jdk.crypto.cryptoki,jdk.crypto.ec,jdk.dynalink,jdk.httpserver,jdk.graal.compiler,jdk.graal.compiler.management,jdk.jdwp.agent,jdk.jfr,jdk.jsobject,jdk.localedata,jdk.management,jdk.management.agent,jdk.management.jfr,jdk.naming.dns,jdk.naming.rmi,jdk.net,jdk.nio.mapmode,jdk.sctp,jdk.security.auth,jdk.security.jgss,jdk.xml.dom,jdk.zipfs</arg>
+                                <arg>
+                                    ALL-MODULE-PATH,java.se,jdk.accessibility,jdk.charsets,jdk.crypto.cryptoki,jdk.crypto.ec,jdk.dynalink,jdk.httpserver,jdk.graal.compiler,jdk.graal.compiler.management,jdk.jdwp.agent,jdk.jfr,jdk.jsobject,jdk.localedata,jdk.management,jdk.management.agent,jdk.management.jfr,jdk.naming.dns,jdk.naming.rmi,jdk.net,jdk.nio.mapmode,jdk.sctp,jdk.security.auth,jdk.security.jgss,jdk.xml.dom,jdk.zipfs
+                                </arg>
                                 <arg>--output</arg>
                                 <arg>${project.build.directory}/holytime</arg>
                                 <arg>--generate-cds-archive</arg>
@@ -263,14 +549,15 @@
                                 <arg>--add-options=
                                     --enable-preview
                                     --enable-native-access=org.xerial.sqlitejdbc,com.sun.jna,javafx.graphics
-<!--                                    -javaagent:holy-agent.jar-->
+                                    --sun-misc-unsafe-memory-access=allow
+                                    <!--  -javaagent:holy-agent.jar-->
                                     -Xmx850m
                                     -Dsun.java2d.d3d=false
-<!--                                    -XX:+UseZGC-->
+                                    <!--  -XX:+UseZGC-->
                                     -XX:+UseStringDeduplication
-<!--                                    -XX:+UnlockDiagnosticVMOptions -XX:+AllowArchivingWithJavaAgent -XX:-UnlockDiagnosticVMOptions-->
-<!--                                    -XX:+AutoCreateSharedArchive-->
-<!--                                    -XX:SharedArchiveFile=holytime.cds-->
+                                    <!--  -XX:+UnlockDiagnosticVMOptions -XX:+AllowArchivingWithJavaAgent -XX:-UnlockDiagnosticVMOptions -->
+                                    <!--  -XX:+AutoCreateSharedArchive-->
+                                    <!--  -XX:SharedArchiveFile=holytime.cds-->
                                 </arg>
                             </args>
                         </configuration>
