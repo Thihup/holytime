@@ -11,7 +11,7 @@ jobs:
         uses: oracle-actions/setup-java@v1
         with:
           website: jdk.java.net
-          release: EA
+          release: '23-ea'
       - name: Build
         run: mvn --no-transfer-progress verify && cp target/holy-agent.jar holy-agent.jar
       - name: Release
