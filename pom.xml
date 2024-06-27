@@ -594,7 +594,7 @@
                 </os>
             </activation>
             <properties>
-                <output.name>holyrics-windows</output.name>
+                <output.name>holytime-windows</output.name>
             </properties>
         </profile>
         <profile>
@@ -605,7 +605,7 @@
                 </os>
             </activation>
             <properties>
-                <output.name>holyrics-mac</output.name>
+                <output.name>holytime-mac</output.name>
             </properties>
         </profile>
         <profile>
@@ -616,7 +616,7 @@
                 </os>
             </activation>
             <properties>
-                <output.name>holyrics-linux</output.name>
+                <output.name>holytime-linux</output.name>
             </properties>
         </profile>
     </profiles>
