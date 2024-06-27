@@ -549,15 +549,15 @@
                                 <arg>--add-options=
                                     --enable-preview
                                     --enable-native-access=org.xerial.sqlitejdbc,com.sun.jna,javafx.graphics
-                                    --sun-misc-unsafe-memory-access=allow
                                     <!--  -javaagent:holy-agent.jar-->
                                     -Xmx850m
                                     -Dsun.java2d.d3d=false
-                                    <!--  -XX:+UseZGC-->
+                                    -XX:+UseZGC
                                     -XX:+UseStringDeduplication
-                                    <!--  -XX:+UnlockDiagnosticVMOptions -XX:+AllowArchivingWithJavaAgent -XX:-UnlockDiagnosticVMOptions -->
-                                    <!--  -XX:+AutoCreateSharedArchive-->
-                                    <!--  -XX:SharedArchiveFile=holytime.cds-->
+                                    -XX:+IgnoreUnrecognizedVMOptions --sun-misc-unsafe-memory-access=allow -XX:-IgnoreUnrecognizedVMOptions
+                                    -XX:+UnlockDiagnosticVMOptions -XX:+AllowArchivingWithJavaAgent -XX:-UnlockDiagnosticVMOptions
+                                    -XX:+AutoCreateSharedArchive
+                                    -XX:SharedArchiveFile=holytime.cds
                                 </arg>
                             </args>
                         </configuration>
