@@ -554,7 +554,7 @@
                                     -Dsun.java2d.d3d=false
                                     -XX:+UseZGC
                                     -XX:+UseStringDeduplication
-                                    <!-- --sun-misc-unsafe-memory-access=allow -->
+                                    <!-- sun-misc-unsafe-memory-access=allow -->
                                     -XX:+UnlockDiagnosticVMOptions -XX:+AllowArchivingWithJavaAgent -XX:-UnlockDiagnosticVMOptions
                                     -XX:+AutoCreateSharedArchive
                                     -XX:SharedArchiveFile=holytime.cds
