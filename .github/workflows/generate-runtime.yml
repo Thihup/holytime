@@ -24,7 +24,7 @@ jobs:
       - name: Release
         uses: ncipollo/release-action@v1
         with:
-            artifacts: "holytime-windows.zip"
+            artifacts: "target/holytime-windows.zip"
             replacesArtifacts: false
             tag: Holytime-JDK-${{ github.event.inputs.runtime_version }}
             token: ${{ secrets.GITHUB_TOKEN }}
@@ -45,7 +45,7 @@ jobs:
       - name: Release
         uses: ncipollo/release-action@v1
         with:
-            artifacts: "holytime-linux.zip"
+            artifacts: "target/holytime-linux.zip"
             replacesArtifacts: false
             tag: Holytime-JDK-${{ github.event.inputs.runtime_version }}
             token: ${{ secrets.GITHUB_TOKEN }}
