@@ -4,7 +4,7 @@ on:
     inputs:
       runtime_version:
         description: 'JDK version'
-        default: '20'
+        default: '24-ea'
         required: true
       
 jobs:
@@ -21,10 +21,16 @@ jobs:
       - name: Generate runtime
         run: |
           mvn package
+      - name: Upload Holy-agent
+        uses: actions/upload-artifact@v4
+        with:
+          name: holy-agent.jar
+          path: holy-agent/target/holy-agent.jar
+
       - name: Release
         uses: ncipollo/release-action@v1
         with:
-            artifacts: "target/holytime-windows.zip"
+            artifacts: "holytime-dist/target/holytime-windows.zip"
             replacesArtifacts: false
             tag: Holytime-JDK-${{ github.event.inputs.runtime_version }}
             token: ${{ secrets.GITHUB_TOKEN }}
@@ -45,7 +51,7 @@ jobs:
       - name: Release
         uses: ncipollo/release-action@v1
         with:
-            artifacts: "target/holytime-linux.zip"
+            artifacts: "holytime-dist/target/holytime-linux.zip"
             replacesArtifacts: false
             tag: Holytime-JDK-${{ github.event.inputs.runtime_version }}
             token: ${{ secrets.GITHUB_TOKEN }}
