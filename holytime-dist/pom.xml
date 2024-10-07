@@ -620,6 +620,7 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
+                            <workingDirectory>${session.executionRootDirectory}</workingDirectory>
                             <executable>${holytime.dist.folder}/bin/java</executable>
                             <arguments>
                                 <argument>-Xshare:dump</argument>
