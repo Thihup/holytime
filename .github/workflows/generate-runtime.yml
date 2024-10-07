@@ -6,6 +6,10 @@ on:
         description: 'JDK version'
         default: '24-ea'
         required: true
+      distribution:
+        description: 'JDK Distribution'
+        default: 'graalvm'
+        required: true
       
 jobs:
   build-windows:
@@ -13,11 +17,11 @@ jobs:
     steps:
       - name: Checkout Sources
         uses: actions/checkout@v1
-      - name: Setup GraalVM
-        uses: graalvm/setup-graalvm@v1
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
           java-version: ${{ github.event.inputs.runtime_version }}
-          distribution: 'graalvm'        
+          distribution: ${{ github.event.inputs.distribution }}
       - name: Generate runtime
         run: |
           mvn package
@@ -41,10 +45,11 @@ jobs:
     steps:
       - name: Checkout Sources
         uses: actions/checkout@v1
-      - uses: graalvm/setup-graalvm@v1
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
           java-version: ${{ github.event.inputs.runtime_version }}
-          distribution: 'graalvm'
+          distribution: ${{ github.event.inputs.distribution }}
       - name: Generate runtime
         run: |
           mvn package
