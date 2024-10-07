@@ -200,6 +200,7 @@
                                     <groupId>dev.thihup.holytime</groupId>
                                     <artifactId>holy-agent</artifactId>
                                     <version>1.0-SNAPSHOT</version>
+                                    <!--suppress UnresolvedMavenProperty -->
                                     <outputDirectory>${session.executionRootDirectory}/holytime</outputDirectory>
                                     <destFileName>holy-agent.jar</destFileName>
                                 </artifactItem>
@@ -589,7 +590,7 @@
                                 <arg>--add-options=
                                     --enable-preview
                                     --enable-native-access=org.xerial.sqlitejdbc,com.sun.jna,javafx.graphics
-                                    --sun-misc-unsafe-memory-access=deny
+                                    --sun-misc-unsafe-memory-access=allow
                                     --finalization=disabled
                                     -javaagent:holytime/holy-agent.jar
                                     -Xmx850m
@@ -619,7 +620,6 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <workingDirectory>${session.executionRootDirectory}</workingDirectory>
                             <executable>${holytime.dist.folder}/bin/java</executable>
                             <arguments>
                                 <argument>-Xshare:dump</argument>
