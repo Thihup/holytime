@@ -8,7 +8,7 @@ on:
         required: true
       distribution:
         description: 'JDK Distribution'
-        default: 'graalvm'
+        default: 'temurin'
         required: true
       
 jobs:
