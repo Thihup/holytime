@@ -1,4 +1,6 @@
-package dev.thihup.holy.agent;
+package dev.thihup.holytime.holy.agent;
+
+import org.jspecify.annotations.Nullable;
 
 import java.io.InputStream;
 import java.lang.classfile.*;
@@ -61,8 +63,8 @@ class HolyPatcher implements ClassFileTransformer {
     }
 
     @Override
-    public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined,
-                            ProtectionDomain protectionDomain, byte[] classfileBuffer) {
+    public byte @Nullable [] transform(ClassLoader loader, String className, Class<?> classBeingRedefined,
+                                       ProtectionDomain protectionDomain, byte[] classfileBuffer) {
 
         return switch (className) {
 
@@ -97,9 +99,9 @@ class HolyPatcher implements ClassFileTransformer {
         };
     }
 
-    private static byte[] loadNewJavaVersionClass(String className) {
+    private static byte @Nullable [] loadNewJavaVersionClass(String className) {
         try (InputStream inputStream = Premain.class.getResourceAsStream(
-                "/dev/thihup/holy/agent/JavaVersion.class")) {
+                "/dev/thihup/holytime/holy/agent/JavaVersion.class")) {
             return requireNonNull(inputStream).readAllBytes();
         } catch (Exception e) {
             System.out.println("[Holyrics Patcher] Failed to patch " + className);
@@ -111,7 +113,7 @@ class HolyPatcher implements ClassFileTransformer {
                                      ClassTransform classTransform) {
         ClassFile classfile = ClassFile.of();
         ClassModel classModel = classfile.parse(classfileBuffer);
-        return classfile.transform(classModel, classTransform);
+        return classfile.transformClass(classModel, classTransform);
     }
 
 }

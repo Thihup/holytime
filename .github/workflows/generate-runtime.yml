@@ -4,7 +4,7 @@ on:
     inputs:
       runtime_version:
         description: 'JDK version'
-        default: '23-ea'
+        default: '24-ea'
         required: true
       
 jobs:

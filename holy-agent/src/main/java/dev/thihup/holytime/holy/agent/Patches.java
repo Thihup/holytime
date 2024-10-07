@@ -1,4 +1,4 @@
-package dev.thihup.holy.agent;
+package dev.thihup.holytime.holy.agent;
 
 import java.lang.classfile.AccessFlags;
 import java.lang.classfile.CodeBuilder;
@@ -111,7 +111,7 @@ class Patches {
     static FieldTransform finalFlagRemover() {
         return ((builder, element) -> {
             if (element instanceof AccessFlags flags) {
-                builder.with(AccessFlags.ofField(flags.flagsMask() ^ Modifier.FINAL));
+                builder.withFlags(flags.flagsMask() ^ Modifier.FINAL);
                 return;
             }
             builder.with(element);

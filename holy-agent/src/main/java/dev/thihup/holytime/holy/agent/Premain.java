@@ -1,10 +1,12 @@
-package dev.thihup.holy.agent;
+package dev.thihup.holytime.holy.agent;
 
 import java.io.IOException;
 import java.lang.System.Logger.Level;
 import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,7 +59,7 @@ public class Premain {
         Module xstreamModule = ModuleLayer.boot().findModule("com.thoughtworks.xstream").orElse(unnamedModule);
         Module weblafModule = ModuleLayer.boot().findModule("com.alee.weblaf").orElse(unnamedModule);
 
-        Set<Module> modules = Set.of(unnamedModule, xstreamModule, weblafModule);
+        Set<Module> modules = new HashSet<>(List.of(unnamedModule, xstreamModule, weblafModule));
 
         openPackagesForModule("java.base", Map.of(
                 "java.util", modules,

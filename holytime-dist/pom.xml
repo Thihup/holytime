@@ -14,24 +14,27 @@
     <version>1.0-SNAPSHOT</version>
     <properties>
         <nashorn.version>15.4</nashorn.version>
-        <slf4j.version>2.0.12</slf4j.version>
-        <log4j.version>2.23.1</log4j.version>
-        <sqlite.version>3.46.0.0</sqlite.version>
-        <xmlbeans.version>5.2.0</xmlbeans.version>
+        <slf4j.version>2.0.16</slf4j.version>
+        <log4j.version>2.24.0</log4j.version>
+        <sqlite.version>3.46.1.0</sqlite.version>
+        <xmlbeans.version>5.2.1</xmlbeans.version>
         <websocket.version>1.5.6</websocket.version>
-        <jna.version>5.14.0</jna.version>
-        <gson.version>2.10</gson.version>
-        <javafx.version>22</javafx.version>
+        <jna.version>5.15.0</jna.version>
+        <gson.version>2.11.0</gson.version>
+        <javafx.version>23</javafx.version>
         <jaxws.rt.version>2.3.7</jaxws.rt.version>
         <jakarta.annotation-api>1.3.5</jakarta.annotation-api>
         <xstream.version>1.4.20</xstream.version>
         <dom4j.version>2.1.4</dom4j.version>
         <commons-imaging.version>1.0.0-alpha5</commons-imaging.version>
         <java-image-scaling.version>0.8.6</java-image-scaling.version>
-        <rsyntaxtextarea.version>3.4.0</rsyntaxtextarea.version>
-        <jericho-html.version>3.3</jericho-html.version>
+        <rsyntaxtextarea.version>3.5.1</rsyntaxtextarea.version>
+        <jericho-html.version>3.4</jericho-html.version>
         <weblaf.version>1.29</weblaf.version>
         <dependencies.folder>${project.build.directory}/dependency</dependencies.folder>
+        <jlink.output.folder>${project.build.directory}/jlink-output</jlink.output.folder>
+        <holytime.dist.folder>${jlink.output.folder}/holytime</holytime.dist.folder>
+        <classlist.path>${project.build.directory}/classlist</classlist.path>
     </properties>
     <dependencies>
         <dependency>
@@ -184,9 +187,48 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                     </execution>
+                    <!-- Add the before to allow the runtime to generate -->
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <id>add-agent-to-allow-jlink-to-work</id>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>dev.thihup.holytime</groupId>
+                                    <artifactId>holy-agent</artifactId>
+                                    <version>1.0-SNAPSHOT</version>
+                                    <outputDirectory>${session.executionRootDirectory}/holytime</outputDirectory>
+                                    <destFileName>holy-agent.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                    <!-- Add the agent after the runtime has been generated -->
+                    <execution>
+                        <phase>package</phase>
+                        <id>add-agent-to-runtime</id>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>dev.thihup.holytime</groupId>
+                                    <artifactId>holy-agent</artifactId>
+                                    <version>1.0-SNAPSHOT</version>
+                                    <outputDirectory>${holytime.dist.folder}</outputDirectory>
+                                    <destFileName>holy-agent.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <executions>
                     <execution>
@@ -211,7 +253,7 @@
                                     </includes>
                                 </fileset>
                                 <fileset>
-                                    <directory>${project.build.directory}/holytime</directory>
+                                    <directory>${jlink.output.folder}</directory>
                                 </fileset>
                                 <fileset>
                                     <directory>${project.build.directory}</directory>
@@ -238,6 +280,7 @@
                         <configuration>
                             <outputDirectory>${dependencies.folder}</outputDirectory>
                             <overwriteExistingFiles>true</overwriteExistingFiles>
+                            <failOnWarning>false</failOnWarning>
                             <modules>
                                 <module>
                                     <artifact>
@@ -541,23 +584,48 @@
                                     ALL-MODULE-PATH,java.se,jdk.accessibility,jdk.charsets,jdk.crypto.cryptoki,jdk.crypto.ec,jdk.dynalink,jdk.httpserver,jdk.graal.compiler,jdk.graal.compiler.management,jdk.jdwp.agent,jdk.jfr,jdk.jsobject,jdk.localedata,jdk.management,jdk.management.agent,jdk.management.jfr,jdk.naming.dns,jdk.naming.rmi,jdk.net,jdk.nio.mapmode,jdk.sctp,jdk.security.auth,jdk.security.jgss,jdk.xml.dom,jdk.zipfs
                                 </arg>
                                 <arg>--output</arg>
-                                <arg>${project.build.directory}/holytime</arg>
-                                <arg>--generate-cds-archive</arg>
+                                <arg>${holytime.dist.folder}</arg>
                                 <!-- The space before the enable-preview is necessary -->
                                 <arg>--add-options=
                                     --enable-preview
                                     --enable-native-access=org.xerial.sqlitejdbc,com.sun.jna,javafx.graphics
-                                    <!--  -javaagent:holy-agent.jar-->
+                                    --sun-misc-unsafe-memory-access=deny
+                                    --finalization=disabled
+                                    -javaagent:holytime/holy-agent.jar
                                     -Xmx850m
                                     -Dsun.java2d.d3d=false
+                                    -Dfile.encoding=UTF-8
+
                                     -XX:+UseZGC
                                     -XX:+UseStringDeduplication
-                                    <!-- sun-misc-unsafe-memory-access=allow -->
                                     -XX:+UnlockDiagnosticVMOptions -XX:+AllowArchivingWithJavaAgent -XX:-UnlockDiagnosticVMOptions
                                     -XX:+AutoCreateSharedArchive
-                                    -XX:SharedArchiveFile=holytime.cds
+                                    -XX:SharedArchiveFile=holytime/holytime-static.cds${path.separator}holytime/holytime-dynamic.cds
                                 </arg>
                             </args>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>generate default CDS archive</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <workingDirectory>${session.executionRootDirectory}</workingDirectory>
+                            <executable>${holytime.dist.folder}/bin/java</executable>
+                            <arguments>
+                                <argument>-Xshare:dump</argument>
+                                <argument>-XX:-AutoCreateSharedArchive</argument>
+                                <argument>-XX:SharedArchiveFile=${holytime.dist.folder}/holytime-static.cds</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
@@ -567,7 +635,7 @@
                 <artifactId>zip-maven-plugin</artifactId>
                 <version>1.0.0</version>
                 <configuration>
-                    <inputDirectory>${project.build.directory}/holytime</inputDirectory>
+                    <inputDirectory>${jlink.output.folder}</inputDirectory>
                     <outputDirectory>${project.build.directory}</outputDirectory>
                     <zipName>${output.name}</zipName>
                 </configuration>

@@ -13,18 +13,26 @@
     <artifactId>holy-agent</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+            <version>1.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
     <build>
         <finalName>holy-agent</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.2</version>
                 <configuration>
                     <archive>
                         <manifestEntries>
                             <Premain-Class>
-                                dev.thihup.holy.agent.Premain
+                                dev.thihup.holytime.holy.agent.Premain
                             </Premain-Class>
                             <Can-Retransform-Classes>
                                 true
