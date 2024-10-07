@@ -14,7 +14,7 @@
     </modules>
 
     <properties>
-        <maven.compiler.release>23</maven.compiler.release>
+        <maven.compiler.release>24</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <asm.version>9.7</asm.version>
     </properties>
