@@ -24,7 +24,7 @@ jobs:
           distribution: ${{ github.event.inputs.distribution }}
       - name: Generate runtime
         run: |
-          mvn package
+          mvn package --no-transfer-progress
       - name: Upload Holy-agent
         uses: actions/upload-artifact@v4
         with:
@@ -52,7 +52,7 @@ jobs:
           distribution: ${{ github.event.inputs.distribution }}
       - name: Generate runtime
         run: |
-          mvn package
+          mvn package --no-transfer-progress
       - name: Release
         uses: ncipollo/release-action@v1
         with:
