@@ -36,6 +36,9 @@
         <holytime.dist.folder>${jlink.output.folder}/holytime</holytime.dist.folder>
         <classlist.path>${project.build.directory}/classlist</classlist.path>
         <vlcj.version>2.4.1</vlcj.version>
+        <beansbinding.version>1.2.1</beansbinding.version>
+        <bridj.version>0.7.0</bridj.version>
+        <webcam-capture.version>0.3.12</webcam-capture.version>
     </properties>
     <dependencies>
         <dependency>
@@ -186,6 +189,27 @@
                     <artifactId>platform</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jdesktop</groupId>
+            <artifactId>beansbinding</artifactId>
+            <version>${beansbinding.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.nativelibs4java</groupId>
+            <artifactId>bridj</artifactId>
+            <version>${bridj.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.android.tools</groupId>
+                    <artifactId>dx</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sarxos</groupId>
+            <artifactId>webcam-capture</artifactId>
+            <version>${webcam-capture.version}</version>
         </dependency>
     </dependencies>
 
@@ -627,6 +651,97 @@
 
                                         }
 
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>org.jdesktop</groupId>
+                                        <artifactId>beansbinding</artifactId>
+                                        <version>${beansbinding.version}</version>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module org.jdesktop.beansbinding {
+                                            requires transitive java.desktop;
+
+                                            exports org.jdesktop.beansbinding;
+                                            exports org.jdesktop.beansbinding.ext;
+                                            exports org.jdesktop.el;
+                                            exports org.jdesktop.el.impl;
+                                            exports org.jdesktop.el.impl.lang;
+                                            exports org.jdesktop.el.impl.parser;
+                                            exports org.jdesktop.el.impl.util;
+                                            exports org.jdesktop.observablecollections;
+                                            exports org.jdesktop.swingbinding;
+                                            exports org.jdesktop.swingbinding.adapters;
+                                            exports org.jdesktop.swingbinding.impl;
+
+                                            provides org.jdesktop.beansbinding.ext.BeanAdapterProvider with
+                                                    org.jdesktop.swingbinding.adapters.AbstractButtonAdapterProvider,
+                                                    org.jdesktop.swingbinding.adapters.JTextComponentAdapterProvider,
+                                                    org.jdesktop.swingbinding.adapters.JListAdapterProvider,
+                                                    org.jdesktop.swingbinding.adapters.JTableAdapterProvider,
+                                                    org.jdesktop.swingbinding.adapters.JSliderAdapterProvider,
+                                                    org.jdesktop.swingbinding.adapters.JSpinnerAdapterProvider,
+                                                    org.jdesktop.swingbinding.adapters.JComboBoxAdapterProvider;
+
+                                        }
+
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>com.nativelibs4java</groupId>
+                                        <artifactId>bridj</artifactId>
+                                        <version>${bridj.version}</version>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module org.bridj {
+                                            requires transitive java.desktop;
+                                            requires transitive java.logging;
+
+                                            exports org.bridj;
+                                            exports org.bridj.ann;
+                                            exports org.bridj.cpp;
+                                            exports org.bridj.cpp.com;
+                                            exports org.bridj.cpp.com.shell;
+                                            exports org.bridj.cpp.mfc;
+                                            exports org.bridj.cpp.std;
+                                            exports org.bridj.demangling;
+                                            exports org.bridj.dyncall;
+                                            exports org.bridj.func;
+                                            exports org.bridj.jawt;
+                                            exports org.bridj.objc;
+                                            exports org.bridj.relocated.org.objectweb.asm;
+                                            exports org.bridj.relocated.org.objectweb.asm.signature;
+                                            exports org.bridj.util;
+
+                                        }
+
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>com.github.sarxos</groupId>
+                                        <artifactId>webcam-capture</artifactId>
+                                        <version>${webcam-capture.version}</version>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module com.github.sarxos.webcam.capture {
+                                            requires jdk.unsupported;
+                                            requires org.slf4j;
+
+                                            requires transitive java.desktop;
+                                            requires transitive org.bridj;
+
+                                            exports com.github.sarxos.webcam;
+                                            exports com.github.sarxos.webcam.ds.buildin;
+                                            exports com.github.sarxos.webcam.ds.buildin.natives;
+                                            exports com.github.sarxos.webcam.ds.cgt;
+                                            exports com.github.sarxos.webcam.ds.dummy;
+                                            exports com.github.sarxos.webcam.log;
+                                            exports com.github.sarxos.webcam.util;
+                                            exports com.github.sarxos.webcam.util.jh;
+                                        }
                                     </moduleInfoSource>
                                 </module>
                             </modules>
