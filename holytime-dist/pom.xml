@@ -35,6 +35,7 @@
         <jlink.output.folder>${project.build.directory}/jlink-output</jlink.output.folder>
         <holytime.dist.folder>${jlink.output.folder}/holytime</holytime.dist.folder>
         <classlist.path>${project.build.directory}/classlist</classlist.path>
+        <vlcj.version>2.4.1</vlcj.version>
     </properties>
     <dependencies>
         <dependency>
@@ -170,6 +171,21 @@
             <artifactId>dom4j</artifactId>
             <version>${dom4j.version}</version>
             <optional>false</optional>
+        </dependency>
+        <dependency>
+            <groupId>uk.co.caprica</groupId>
+            <artifactId>vlcj</artifactId>
+            <version>${vlcj.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.java.dev.jna </groupId>
+                    <artifactId>jna</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.java.dev.jna</groupId>
+                    <artifactId>platform</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -554,6 +570,63 @@
                                         exports com.alee.utils.xml;
                                         exports com.alee.utils.zip;
                                         }
+                                    </moduleInfoSource>
+                                </module>
+                                <module>
+                                    <artifact>
+                                        <groupId>uk.co.caprica</groupId>
+                                        <artifactId>vlcj</artifactId>
+                                        <version>${vlcj.version}</version>
+                                    </artifact>
+                                    <moduleInfoSource>
+                                        module uk.co.caprica.vlcj {
+                                        requires transitive com.sun.jna;
+                                        requires transitive com.sun.jna.platform;
+                                        requires transitive java.desktop;
+
+                                        exports uk.co.caprica.vlcj;
+                                        exports uk.co.caprica.vlcj.binding;
+                                        exports uk.co.caprica.vlcj.binding.internal;
+                                        exports uk.co.caprica.vlcj.component;
+                                        exports uk.co.caprica.vlcj.component.overlay;
+                                        exports uk.co.caprica.vlcj.discovery;
+                                        exports uk.co.caprica.vlcj.discovery.linux;
+                                        exports uk.co.caprica.vlcj.discovery.mac;
+                                        exports uk.co.caprica.vlcj.discovery.windows;
+                                        exports uk.co.caprica.vlcj.filter;
+                                        exports uk.co.caprica.vlcj.filter.swing;
+                                        exports uk.co.caprica.vlcj.log;
+                                        exports uk.co.caprica.vlcj.logger;
+                                        exports uk.co.caprica.vlcj.medialist;
+                                        exports uk.co.caprica.vlcj.medialist.events;
+                                        exports uk.co.caprica.vlcj.mrl;
+                                        exports uk.co.caprica.vlcj.player;
+                                        exports uk.co.caprica.vlcj.player.condition;
+                                        exports uk.co.caprica.vlcj.player.condition.conditions;
+                                        exports uk.co.caprica.vlcj.player.direct;
+                                        exports uk.co.caprica.vlcj.player.direct.format;
+                                        exports uk.co.caprica.vlcj.player.directaudio;
+                                        exports uk.co.caprica.vlcj.player.discoverer;
+                                        exports uk.co.caprica.vlcj.player.embedded;
+                                        exports uk.co.caprica.vlcj.player.embedded.videosurface;
+                                        exports uk.co.caprica.vlcj.player.embedded.videosurface.linux;
+                                        exports uk.co.caprica.vlcj.player.embedded.videosurface.mac;
+                                        exports uk.co.caprica.vlcj.player.embedded.videosurface.windows;
+                                        exports uk.co.caprica.vlcj.player.embedded.x;
+                                        exports uk.co.caprica.vlcj.player.events;
+                                        exports uk.co.caprica.vlcj.player.headless;
+                                        exports uk.co.caprica.vlcj.player.list;
+                                        exports uk.co.caprica.vlcj.player.list.events;
+                                        exports uk.co.caprica.vlcj.player.manager;
+                                        exports uk.co.caprica.vlcj.runtime;
+                                        exports uk.co.caprica.vlcj.runtime.install;
+                                        exports uk.co.caprica.vlcj.runtime.windows;
+                                        exports uk.co.caprica.vlcj.runtime.windows.internal;
+                                        exports uk.co.caprica.vlcj.runtime.x;
+                                        exports uk.co.caprica.vlcj.version;
+
+                                        }
+
                                     </moduleInfoSource>
                                 </module>
                             </modules>
