@@ -15,20 +15,12 @@ import static java.util.Objects.requireNonNull;
 
 class HolyPatcher implements ClassFileTransformer {
 
-    private static final Map<ClassDesc, ClassDesc> RENAMES = Map.of(
-            ClassDesc.ofInternalName("jdk/nashorn/api/scripting/NashornScriptEngineFactory"),
-            ClassDesc.ofInternalName("org/openjdk/nashorn/api/scripting/NashornScriptEngineFactory"),
-            ClassDesc.ofInternalName("jdk/nashorn/api/scripting/ScriptObjectMirror"),
-            ClassDesc.ofInternalName("org/openjdk/nashorn/api/scripting/ScriptObjectMirror"),
-            ClassDesc.ofInternalName("jdk/nashorn/api/scripting/ClassFilter"),
-            ClassDesc.ofInternalName("org/openjdk/nashorn/api/scripting/ClassFilter"),
-            ClassDesc.ofInternalName("jdk/nashorn/api/scripting/NashornException"),
-            ClassDesc.ofInternalName("org/openjdk/nashorn/api/scripting/NashornException"),
-            ClassDesc.ofInternalName("jdk/nashorn/internal/objects/Global"),
-            ClassDesc.ofInternalName("org/openjdk/nashorn/internal/objects/Global")
-    );
-
-    private static final ClassRemapper CLASS_REMAPPER = ClassRemapper.of(RENAMES);
+    private static final ClassRemapper CLASS_REMAPPER = ClassRemapper.of(oldClassName -> {
+        if (oldClassName.packageName().startsWith("jdk.nashorn")) {
+            return ClassDesc.ofDescriptor(oldClassName.descriptorString().replace("jdk/nashorn/", "org/openjdk/nashorn/"));
+        }
+        return oldClassName;
+    });
 
     static ClassTransform matchingFieldName(String fieldName, FieldTransform fieldTransform) {
         return (builder, element) -> {
