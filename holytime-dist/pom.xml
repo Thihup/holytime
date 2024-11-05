@@ -589,7 +589,7 @@
                                 <!-- The space before the enable-preview is necessary -->
                                 <arg>--add-options=
                                     --enable-preview
-                                    --enable-native-access=org.xerial.sqlitejdbc,com.sun.jna,javafx.graphics
+                                    --enable-native-access=org.xerial.sqlitejdbc,com.sun.jna,javafx.graphics,javafx.media
                                     --sun-misc-unsafe-memory-access=allow
                                     --finalization=disabled
                                     -javaagent:holytime/holy-agent.jar
