@@ -791,6 +791,7 @@
                                     -XX:+UnlockExperimentalVMOptions -XX:+UseCompactObjectHeaders -XX:-UnlockExperimentalVMOptions
                                     -XX:+AutoCreateSharedArchive
                                     -XX:SharedArchiveFile=holytime/holytime-static.cds${path.separator}holytime/holytime-dynamic.cds
+                                    -XX:+AOTClassLinking
                                 </arg>
                             </args>
                         </configuration>
