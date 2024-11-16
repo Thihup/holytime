@@ -788,6 +788,7 @@
                                     -XX:+UseZGC
                                     -XX:+UseStringDeduplication
                                     -XX:+UnlockDiagnosticVMOptions -XX:+AllowArchivingWithJavaAgent -XX:-UnlockDiagnosticVMOptions
+                                    -XX:+UnlockExperimentalVMOptions -XX:+UseCompactObjectHeaders -XX:-UnlockExperimentalVMOptions
                                     -XX:+AutoCreateSharedArchive
                                     -XX:SharedArchiveFile=holytime/holytime-static.cds${path.separator}holytime/holytime-dynamic.cds
                                 </arg>
