@@ -64,8 +64,9 @@ public class Premain {
         openPackagesForModule("java.base", Map.of(
                 "java.util", modules,
                 "java.lang", modules,
-                "java.lang.reflect", modules
-               ,"java.text", modules
+                "java.lang.reflect", modules,
+                "java.text", modules,
+                "jdk.internal.classfile.components", modules
                 ), instrumentation);
 
         openPackagesForModule("java.desktop", Map.of(
