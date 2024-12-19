@@ -28,8 +28,13 @@ public class Premain {
 
     public static void premain(String agentArgs, Instrumentation inst) {
         LOGGER.log(Level.INFO, "[Holyrics Patcher] Agent loaded");
-        addOpens(inst);
-
+        try {
+             addOpens(inst);
+        } catch (UnsupportedOperationException e) {
+             LOGGER.log(Level.WARNING,
+               "[Holyrics Patcher] Failed to open packages for modules. Probably during -Xshare:dump. Disabling agent.");
+             return;
+        }
         redefineReflection(inst);
         inst.addTransformer(new HolyPatcher());
     }
