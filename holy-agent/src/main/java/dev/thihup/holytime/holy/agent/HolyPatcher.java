@@ -4,12 +4,11 @@ import org.jspecify.annotations.Nullable;
 
 import java.io.InputStream;
 import java.lang.classfile.*;
-import java.lang.classfile.components.ClassRemapper;
 import java.lang.constant.ClassDesc;
 import java.lang.instrument.ClassFileTransformer;
 import java.security.ProtectionDomain;
 import java.util.List;
-import java.util.Map;
+import jdk.internal.classfile.components.ClassRemapper;
 
 import static java.util.Objects.requireNonNull;
 
