@@ -766,7 +766,6 @@
                             <writeErrorsToLog>true</writeErrorsToLog>
                             <failOnError>true</failOnError>
                             <args>
-                                <arg>--ignore-modified-runtime</arg>     
                                 <arg>--module-path</arg>
                                 <arg>${dependencies.folder}</arg>
                                 <arg>--add-modules</arg>
