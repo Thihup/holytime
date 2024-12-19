@@ -781,6 +781,7 @@
                                     --sun-misc-unsafe-memory-access=allow
                                     --finalization=disabled
                                     -javaagent:holytime/holy-agent.jar
+                                    --add-modules=jdk.management.agent
                                     -Xmx850m
                                     -Dsun.java2d.d3d=false
                                     -Dfile.encoding=UTF-8
