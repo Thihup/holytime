@@ -786,7 +786,7 @@
                                     -Dsun.java2d.d3d=false
                                     -Dfile.encoding=UTF-8
 
-                                    -XX:+UseZGC
+                                    -XX:+UseG1GC
                                     -XX:+UseStringDeduplication
                                     -XX:+UnlockDiagnosticVMOptions -XX:+AllowArchivingWithJavaAgent -XX:-UnlockDiagnosticVMOptions
                                     -XX:+UnlockExperimentalVMOptions -XX:+UseCompactObjectHeaders -XX:-UnlockExperimentalVMOptions
