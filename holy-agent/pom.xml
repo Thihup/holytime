@@ -30,9 +30,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <compilerArgs>
-                        <arg>--add-exports=java.base/jdk.internal.classfile.components=dev.thihup.holytime.holy.agent</arg>
-                    </compilerArgs>
+                    <compilerArgs>--add-exports=java.base/jdk.internal.classfile.components=dev.thihup.holytime.holy.agent</compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
