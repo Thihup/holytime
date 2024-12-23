@@ -27,6 +27,12 @@ public class Premain {
     }
 
     public static void premain(String agentArgs, Instrumentation inst) {
+        if (Boolean.getBoolean("holyagent.disable")) {
+            LOGGER.log(Level.WARNING,
+                "[Holyrics Patcher] Agent disabled by system property 'holyagent.disable'.");
+            return;
+        }
+
         LOGGER.log(Level.INFO, "[Holyrics Patcher] Agent loaded");
         try {
              addOpens(inst);
