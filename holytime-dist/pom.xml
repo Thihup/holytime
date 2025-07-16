@@ -814,6 +814,7 @@
                             <workingDirectory>${session.executionRootDirectory}</workingDirectory>
                             <executable>${holytime.dist.folder}/bin/java</executable>
                             <arguments>
+                                <argument>-Dholyagent.disable=true</argument>
                                 <argument>-Xshare:dump</argument>
                                 <argument>-XX:-AutoCreateSharedArchive</argument>
                                 <argument>-XX:SharedArchiveFile=${holytime.dist.folder}/holytime-static.cds</argument>
