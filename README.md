@@ -1,113 +1,99 @@
 # Holytime
 
-Steps to make [Holyrics](https://holyrics.com.br) work with newer Java versions (11/17+).
-Overall, it works just fine. However, as much of its components were removed from standard JDKs, you must put it back to it work as it worked with JDK 8.
-The support for Windows XP was dropped from JDK 9, so only newer Windows version work with it.
+**[Português](#português) | [English](#english)**
 
-This project produces a JLinked Java runtime, called Holytime, with all these steps already done (you can check out the scripts to see it in details)
+---
 
-(Note that these commands were tried with Linux, for Windows some of them may change a little bit, like from ":" to ";")
+## Português
 
-## TL;DR
-- Download the [Holytime](https://github.com/Thihup/holytime/releases) (JDK runtime with all dependencies included)
-- Download the [Holy-agent](https://github.com/Thihup/holy-agent/releases/download/latest/holy-agent.jar)
-- Set the environment variable `J2D_UISCALE` to `96` (to avoid antialiasing issues)
-- Run `holytime/bin/java -javaagent:holy-agent.jar -XX:+AutoCreateSharedArchive -XX:SharedArchiveFile=holytime.cds -XX:+UseStringDeduplication -XX:+UseZGC -Dsun.java2d.d3d=false -jar Holyrics.[jar|exe]`
+### Sobre o Projeto
 
-## Download
-- [Nashorn](https://repo1.maven.org/maven2/org/openjdk/nashorn/nashorn-core/15.4/nashorn-core-15.4.jar) 
-- [ASM](https://repo1.maven.org/maven2/org/ow2/asm/asm/9.6/asm-9.6.jar)
-- [ASM Commons](https://repo1.maven.org/maven2/org/ow2/asm/asm-commons/9.6/asm-commons-9.6.jar)
-- [ASM Tree](https://repo1.maven.org/maven2/org/ow2/asm/asm-tree/9.6/asm-tree-9.6.jar)
-- [ASM Analysis](https://repo1.maven.org/maven2/org/ow2/asm/asm-analysis/9.6/asm-analysis-9.6.jar)
-- [ASM Utilities](https://repo1.maven.org/maven2/org/ow2/asm/asm-util/9.6/asm-util-9.6.jar)
-- [JAXWS](https://search.maven.org/remotecontent?filepath=com/sun/xml/ws/jaxws-ri/2.3.7/jaxws-ri-2.3.7.zip)
-- [JavaFX SDK Linux](https://download2.gluonhq.com/openjfx/21/openjfx-21_linux-x64_bin-sdk.zip)
-- [JavaFX SDK Windows](https://download2.gluonhq.com/openjfx/21/openjfx-21_windows-x64_bin-sdk.zip)
-(You can also use a JDK that already bundles the JavaFX, like "Full JDK" from [Bellsoft](https://bell-sw.com/pages/downloads), in this case, ignore all options related to JavaFX)
+O Holytime é um projeto que visa atualizar o runtime Java utilizado pelo [Holyrics](https://holyrics.com.br), permitindo que o software aproveite melhorias significativas de desempenho, redução no consumo de memória e recursos mais modernos do Java.
 
-## Extract the bundles
-1. Create a folder `mods`
-2. Move the ASM jars (`asm-9.6.jar,asm-commons-9.6.jar,asm-tree-9.6.jar,asm-analysis-9.6.jar,asm-util-9.6.jar`) and the Nashorn (`nashorn-core-15.4.jar`) to the `mods` folder. 
-3. Extract the bundles (`jaxws-ri-2.3.7.zip and openjfx-21_linux-x64_bin-sdk.zip`) inside the `mods` folder.
+### Características
 
-In the end, you should have a structure similar to
+- ✅ **Melhor desempenho**: Runtime Java otimizado
+- ✅ **Menor consumo de memória**: Uso mais eficiente dos recursos do sistema
+- ✅ **Compatibilidade**: Funciona com versões existentes do Holyrics
+- ✅ **Multiplataforma**: Suporte para Windows e Linux
+
+### Instalação
+
+1. **Baixe a versão desejada** na página de [releases](https://github.com/Thihup/holytime/releases)
+2. **Extraia o arquivo** baixado
+3. **Copie a pasta `holytime`** para dentro da pasta raiz do Holyrics:
+   - **Windows**: `C:\Holyrics\holytime`
+   - **Linux**: `/opt/Holyrics/holytime`
+4. **Execute o script apropriado** para seu sistema operacional:
+   - **Windows**: `Holyrics.bat`
+   - **Linux**: `Holyrics.sh`
+
+### Estrutura de Pastas
+
+Após a instalação, a estrutura deve ficar assim:
 ```
-mods
-├── javafx-sdk-21
-├── jaxws-ri
-├── asm-9.6.jar
-├── asm-analysis-9.6.jar
-├── asm-commons-9.6.jar
-├── asm-tree-9.6.jar
-├── asm-util-9.6.jar
-└── nashorn-core-15.4.jar
+Holyrics/
+├── holytime/
+│   ├── Holyrics.bat    (Windows)
+│   ├── Holyrics.sh     (Linux)
+│   └── ...
+└── ... (outros arquivos do Holyrics)
 ```
 
-## Command line
+### Requisitos
 
-You need to include these folders in the module-path, and add all the modules in the root set with:
+- Holyrics instalado
+- Sistema operacional: Windows 10+ ou Linux (distribuições modernas)
+
+### Suporte
+
+Para dúvidas ou problemas, abra uma [issue](https://github.com/Thihup/holytime/issues) neste repositório.
+
+---
+
+## English
+
+### About the Project
+
+Holytime is a project that aims to update the Java runtime used by [Holyrics](https://holyrics.com.br), allowing the software to take advantage of significant performance improvements, reduced memory consumption, and more modern Java features.
+
+### Features
+
+- ✅ **Better performance**: Optimized Java runtime
+- ✅ **Lower memory consumption**: More efficient use of system resources
+- ✅ **Compatibility**: Works with existing Holyrics versions
+- ✅ **Cross-platform**: Support for Windows and Linux
+
+### Installation
+
+1. **Download the desired version** from the [releases](https://github.com/Thihup/holytime/releases) page
+2. **Extract the downloaded file**
+3. **Copy the `holytime` folder** into the Holyrics root directory:
+   - **Windows**: `C:\Holyrics\holytime`
+   - **Linux**: `/opt/Holyrics/holytime`
+4. **Run the appropriate script** for your operating system:
+   - **Windows**: `Holyrics.bat`
+   - **Linux**: `Holyrics.sh`
+
+### Folder Structure
+
+After installation, the structure should look like this:
 ```
---module-path mods:mods/javafx-sdk-21/lib:mods/jaxb-ri/mod:mods/jaxws-ri/lib --add-modules ALL-MODULE-PATH
-```
-
-After that, you need to specify the `--add-opens`:
-```
---add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED --add-opens=java.desktop/java.awt.event=ALL-UNNAMED --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.desktop/javax.swing.table=ALL-UNNAMED --add-opens=java.desktop/sun.font=ALL-UNNAMED --add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED --add-exports=javafx.web/com.sun.webkit.dom=ALL-UNNAMED
-```
-
-
-## Full command line
-
-Linux:
-```shell
-java -Dsun.java2d.d3d=false --module-path mods:mods/javafx-sdk-21/lib:mods/jaxws-ri/lib --add-modules ALL-MODULE-PATH --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED --add-opens=java.desktop/java.awt.event=ALL-UNNAMED --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.desktop/javax.swing.table=ALL-UNNAMED --add-opens=java.desktop/sun.font=ALL-UNNAMED --add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED --add-exports=javafx.web/com.sun.webkit.dom=ALL-UNNAMED -jar Holyrics.jar
-```
-
-Windows:
-```shell
-java -Dsun.java2d.d3d=false --module-path mods;mods/javafx-sdk-21/lib;mods/jaxws-ri/lib --add-modules ALL-MODULE-PATH --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED --add-opens=java.desktop/java.awt.event=ALL-UNNAMED --add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java.desktop/javax.swing.table=ALL-UNNAMED --add-opens=java.desktop/sun.font=ALL-UNNAMED --add-exports=javafx.web/com.sun.webkit.dom=ALL-UNNAMED -jar Holyrics.exe
-```
-
-## Tips
-
-### To have a lower RAM usage (less than 200 MB!)
-- You can use the ZGC garbage collector (`-XX:+UseZGC`)
-- You can enable the String deduplication (`-XX:+UseStringDeduplication` - It will only work with ZGC starting with JDK 18)
-- You can use CDS (starting with JDK 19, you can just use `-XX:+AutoCreateSharedArchive -XX:SharedArchiveFile=app.cds`)
-
-## Issues
-Currently, there are some minor issues:
-- Antialiasing does not work correctly
-  - It seems to be related to: java.lang.NoSuchFieldException: AA_TEXT_PROPERTY_KEY
-- The File icon shows either a broken image or the text "File"
-
-## Create a runtime with all the missing modules
-- You need to download the JavaFX JMODs option
-  - [JavaFX JMODs Linux](https://download2.gluonhq.com/openjfx/21/openjfx-21_linux-x64_bin-jmods.zip)
-  - [JavaFX JMODs Windows](https://download2.gluonhq.com/openjfx/21/openjfx-21_windows-x64_bin-jmods.zip)
-
-- Add the missing module-info to the jakarta.annotation-api.jar
-```
-jdeps --generate-module-info tmp ./mods/jaxws-ri/lib/jakarta.annotation-api.jar
-javac --patch-module=java.annotation=mods/jaxws-ri/lib/jakarta.annotation-api.jar ./tmp/java.annotation/module-info.java
-jar uf ./mods/jaxws-ri/lib/jakarta.annotation-api.jar -C ./tmp/java.annotation/ module-info.class
-```
-- Generate the runtime
-```
-jlink --module-path mods:./mods/javafx-jmods-21\:./mods/jaxb-ri/mod:./mods/jaxws-ri/lib --add-modules ALL-MODULE-PATH,java.base,java.compiler,java.datatransfer,java.desktop,java.instrument,java.logging,java.management,java.management.rmi,java.naming,java.net.http,java.prefs,java.rmi,java.scripting,java.se,java.security.jgss,java.security.sasl,java.smartcardio,java.sql,java.sql.rowset,java.transaction.xa,java.xml,java.xml.crypto,jdk.accessibility,jdk.charsets,jdk.crypto.cryptoki,jdk.crypto.ec,jdk.dynalink,jdk.httpserver,jdk.incubator.foreign,jdk.incubator.vector,jdk.internal.vm.ci,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management,jdk.jdwp.agent,jdk.jfr,jdk.jsobject,jdk.localedata,jdk.management,jdk.management.agent,jdk.management.jfr,jdk.naming.dns,jdk.naming.rmi,jdk.net,jdk.nio.mapmode,jdk.sctp,jdk.security.auth,jdk.security.jgss,jdk.unsupported,jdk.xml.dom,jdk.zipfs --output holytime --compress 2
+Holyrics/
+├── holytime/
+│   ├── Holyrics.bat    (Windows)
+│   ├── Holyrics.sh     (Linux)
+│   └── ...
+└── ... (other Holyrics files)
 ```
 
-## Anti-aliasing issues?
-- Try setting the `J2D_UISCALE` environment variable to 96
+### Requirements
 
-<!---
+- Holyrics installed
+- Operating system: Windows 10+ or Linux (modern distributions)
 
-# Did someone say Modules? (Needs update)
-If your are feeling adventures, you can try to use the Holyrics in the module-path:
+### Support
 
-Linux:
-```
-java -Dsun.java2d.d3d=false --module-path mods:mods/javafx-sdk-21/lib:mods/jaxb-ri/mod:mods/jaxws-ri/lib:lib/AbsoluteLayout.jar:lib/beansbinding-1.2.1.jar:lib/Bible-1.3.0.jar:lib/bridj-0.7.0.jar:lib/commons-imaging-1.0-alpha1.jar:lib/dom4j-1.6.1.jar:lib/google-zxing-3.2.1.jar:lib/gson-2.4.jar:lib/jna-3.5.2.jar:lib/jna-platform-4.1.0.jar:lib/xmlbeans-2.6.0.jar:lib/webcam-capture-0.3.12.jar:lib/vlcj-2.4.1.jar:lib/VagalumeAPI_LG-1.0.0.jar:lib/sqlite-jdbc-3.8.11.2.jar:lib/SpellCheck-1.4.1.jar:lib/SevenZip.jar:lib/PopupWorker-1.0.0.jar:lib/poi-3.9-20121203.jar:lib/i18n-1.0.0.jar:lib/weblaf-1.29.jar:Holyrics.jar:lib/poi-ooxml-schemas-3.9-20121203.jar --patch-module=poi=lib/poi-ooxml-3.9-20121203.jar:lib/poi-scratchpad-3.9.jar --patch-module=weblaf=lib/holyrics-lib-fix-1.0.0.jar --add-modules ALL-MODULE-PATH,java.sql --add-opens=java.base/java.util=weblaf --add-opens=java.base/java.lang.reflect=weblaf --add-opens=java.base/java.lang=weblaf --add-opens=java.base/java.text=weblaf --add-opens=java.desktop/java.awt=weblaf --add-opens=java.desktop/java.awt.font=weblaf --add-opens=java.desktop/java.awt.event=weblaf --add-opens=java.desktop/javax.swing=weblaf --add-opens=java.desktop/javax.swing.table=weblaf --add-opens=java.desktop/sun.font=weblaf --add-opens=java.desktop/sun.awt.X11=weblaf --add-exports=javafx.web/com.sun.webkit.dom=Holyrics -m Holyrics
-```
---->
+For questions or issues, please open an [issue](https://github.com/Thihup/holytime/issues) in this repository.
+
+
