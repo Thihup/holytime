@@ -290,6 +290,7 @@
                                         <include>javafx-media-${javafx.version}.jar</include>
                                         <include>javafx-swing-${javafx.version}.jar</include>
                                         <include>javafx-web-${javafx.version}.jar</include>
+                                        <include>jdk-jsobject-${javafx.version}.jar</include>
                                         <include>holytime-${output.name}.zip</include>
                                     </includes>
                                 </fileset>
