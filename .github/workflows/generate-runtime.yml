@@ -46,7 +46,7 @@ jobs:
       - name: Checkout Sources
         uses: actions/checkout@v1
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           java-version: ${{ github.event.inputs.runtime_version }}
           distribution: ${{ github.event.inputs.distribution }}
