@@ -14,12 +14,30 @@ import static java.util.Objects.requireNonNull;
 
 class HolyPatcher implements ClassFileTransformer {
 
+    private static final byte[] NASHORN_PATTERN = "jdk/nashorn/".getBytes(java.nio.charset.StandardCharsets.ISO_8859_1);
+
     private static final ClassRemapper CLASS_REMAPPER = ClassRemapper.of(oldClassName -> {
         if (oldClassName.packageName().startsWith("jdk.nashorn")) {
-            return ClassDesc.ofDescriptor(oldClassName.descriptorString().replace("jdk/nashorn/", "org/openjdk/nashorn/"));
+            String newPkg = "org.openjdk.nashorn" + oldClassName.packageName().substring("jdk.nashorn".length());
+            return ClassDesc.of(newPkg, oldClassName.displayName());
         }
         return oldClassName;
     });
+
+    private static boolean containsNashorn(byte[] buffer) {
+        outer: for (int i = 0; i <= buffer.length - NASHORN_PATTERN.length; i++) {
+            for (int j = 0; j < NASHORN_PATTERN.length; j++) {
+                if (buffer[i + j] != NASHORN_PATTERN[j]) {
+                    continue outer;
+                }
+            }
+            if (i >= 4 && buffer[i - 4] == 'o' && buffer[i - 3] == 'p' && buffer[i - 2] == 'e' && buffer[i - 1] == 'n') {
+                continue;
+            }
+            return true;
+        }
+        return false;
+    }
 
     static ClassTransform matchingFieldName(String fieldName, FieldTransform fieldTransform) {
         return (builder, element) -> {
@@ -74,16 +92,19 @@ class HolyPatcher implements ClassFileTransformer {
                     patchClass(classfileBuffer, matchingFieldName("metricsCache", Patches.finalFlagRemover()));
             case "javax/swing/text/html/HTMLEditorKit" ->
                     patchClass(classfileBuffer, matchingFieldName("defaultFactory", Patches.finalFlagRemover()));
-
+            
             // VLCJ
             case "uk/co/caprica/vlcj/player/NativeString" ->
                     patchClass(classfileBuffer,
                         matchingAnyMethodName(List.of("getNativeString", "copyNativeString"), Patches.removeDeprecatedCallJNA()));
             case "uk/co/caprica/vlcj/player/direct/DefaultDirectMediaPlayer" ->
                     patchClass(classfileBuffer, matchingMethodName("format", Patches.removeDeprecatedCallJNA()));
+            case "uk/co/caprica/vlcj/logger/Logger" -> patchClass(classfileBuffer, matchingFieldName("out", Patches.finalFlagRemover()));
 
             // Holyrics
-            case String e when e.startsWith("com/limagiran/js/") || e.startsWith("com/limagiran/holyrics/js/") ->
+            case "com/limagiran/javaupdate/JavaUpdate" -> patchClass(classfileBuffer, matchingFieldName("update", Patches.finalFlagRemover()));
+
+            case String e when e.startsWith("com/limagiran/") && containsNashorn(classfileBuffer) ->
                  patchClass(classfileBuffer, CLASS_REMAPPER);
 
             case String _ -> null;
@@ -102,7 +123,7 @@ class HolyPatcher implements ClassFileTransformer {
 
     public static byte[] patchClass(byte[] classfileBuffer,
                                      ClassTransform classTransform) {
-        ClassFile classfile = ClassFile.of();
+        ClassFile classfile = ClassFile.of(ClassFile.ConstantPoolSharingOption.NEW_POOL);
         ClassModel classModel = classfile.parse(classfileBuffer);
         return classfile.transformClass(classModel, classTransform);
     }

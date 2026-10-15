@@ -65,13 +65,15 @@ public class Premain {
 
     private static void addOpens(Instrumentation instrumentation) {
         ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
-
         Module unnamedModule = systemClassLoader.getUnnamedModule();
+        
         Module xstreamModule = ModuleLayer.boot().findModule("com.thoughtworks.xstream").orElse(unnamedModule);
         Module weblafModule = ModuleLayer.boot().findModule("com.alee.weblaf").orElse(unnamedModule);
+        Module javaBase = ModuleLayer.boot().findModule("java.base").orElse(unnamedModule);
+
 
         Set<Module> modules = new HashSet<>(List.of(unnamedModule, xstreamModule, weblafModule));
-
+        
         openPackagesForModule("java.base", Map.of(
                 "java.util", modules,
                 "java.lang", modules,
@@ -109,6 +111,9 @@ public class Premain {
                 "com.sun.webkit.dom", modules
         ), instrumentation);
 
+        openPackagesForModule("uk.co.caprica.vlcj", Map.of(
+            "uk.co.caprica.vlcj.logger", Set.of(unnamedModule, javaBase)
+        ), instrumentation);
 
 
     }

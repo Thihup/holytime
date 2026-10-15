@@ -13,20 +13,20 @@
     <artifactId>holytime-dist</artifactId>
     <version>1.0-SNAPSHOT</version>
     <properties>
-        <javafx.version>25</javafx.version>
-        <slf4j.version>2.0.17</slf4j.version>
-        <log4j.version>2.24.3</log4j.version>
-        <sqlite.version>3.49.1.0</sqlite.version>
-        <jna.version>5.17.0</jna.version>
-        <xmlbeans.version>5.3.0</xmlbeans.version>
-        <gson.version>2.12.1</gson.version>
+        <javafx.version>27</javafx.version>
+        <slf4j.version>2.0.20</slf4j.version>
+        <log4j.version>2.26.1</log4j.version>
+        <sqlite.version>3.53.4.0</sqlite.version>
+        <jna.version>5.19.1</jna.version>
+        <xmlbeans.version>5.4.1</xmlbeans.version>
+        <gson.version>2.14.0</gson.version>
         <xstream.version>1.4.21</xstream.version>
-        <websocket.version>1.5.6</websocket.version>
-        <nashorn.version>15.6</nashorn.version>
+        <websocket.version>1.6.0</websocket.version>
+        <nashorn.version>15.7</nashorn.version>
         <jaxws.rt.version>2.3.7</jaxws.rt.version>
         <jakarta.annotation-api>1.3.5</jakarta.annotation-api>
-        <dom4j.version>2.1.4</dom4j.version>
-        <commons-imaging.version>1.0.0-alpha5</commons-imaging.version>
+        <dom4j.version>2.2.0</dom4j.version>
+        <commons-imaging.version>1.0.0-alpha6</commons-imaging.version>
         <java-image-scaling.version>0.8.6</java-image-scaling.version>
         <rsyntaxtextarea.version>3.5.1</rsyntaxtextarea.version>
         <jericho-html.version>3.4</jericho-html.version>
@@ -74,6 +74,11 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-to-slf4j</artifactId>
             <version>${log4j.version}</version>
         </dependency>
         <dependency>
@@ -768,39 +773,41 @@
                             <failOnError>true</failOnError>
                             <args>
                                 <arg>--module-path</arg>
-                                <arg>${dependencies.folder}</arg>
+                                <arg>${dependencies.folder}${path.separator}${java.home}/jmods</arg>
                                 <arg>--add-modules</arg>
                                 <arg>
-                                    ALL-MODULE-PATH,java.se,jdk.accessibility,jdk.charsets,jdk.crypto.cryptoki,jdk.crypto.ec,jdk.dynalink,jdk.httpserver,jdk.graal.compiler,jdk.graal.compiler.management,jdk.jdwp.agent,jdk.jfr,jdk.jsobject,jdk.localedata,jdk.management,jdk.management.agent,jdk.management.jfr,jdk.naming.dns,jdk.naming.rmi,jdk.net,jdk.nio.mapmode,jdk.sctp,jdk.security.auth,jdk.security.jgss,jdk.xml.dom,jdk.zipfs
+                                    ALL-MODULE-PATH
                                 </arg>
                                 <arg>--output</arg>
                                 <arg>${holytime.dist.folder}</arg>
                                 <!-- The space before the enable-preview is necessary -->
+                                <!-- For some reason, it is needed the add-opens for java.lang.reflect -->
+                                <!-- even when redefining the module with Java Agent  add-opens=java.base/java.lang.reflect=ALL-UNNAMED -->
                                 <arg>--add-options=
                                     --enable-preview
-                                    --enable-native-access=org.xerial.sqlitejdbc,com.sun.jna,javafx.graphics,javafx.media
-                                    --sun-misc-unsafe-memory-access=allow
+                                    --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
+                                    
                                     --finalization=disabled
+                                    --sun-misc-unsafe-memory-access=allow
+                                    --illegal-final-field-mutation=allow
+                                    --enable-native-access=javafx.graphics,javafx.web,javafx.media,org.xerial.sqlitejdbc,com.sun.jna 
+
                                     -javaagent:holytime/holy-agent.jar
 
                                     -Xmx850m
                                     -Dsun.java2d.d3d=false
                                     -Dfile.encoding=UTF-8
 
-                                    -XX:+UseG1GC
+                                    -XX:+UseZGC
                                     -XX:+UseStringDeduplication
-                                    -XX:+UnlockDiagnosticVMOptions -XX:+AllowArchivingWithJavaAgent -XX:-UnlockDiagnosticVMOptions
-                                    -XX:+UnlockExperimentalVMOptions -XX:+UseCompactObjectHeaders -XX:-UnlockExperimentalVMOptions
-                                    -XX:+AutoCreateSharedArchive
-                                    -XX:SharedArchiveFile=holytime/holytime-static.cds${path.separator}holytime/holytime-dynamic.cds
-                                    -XX:+AOTClassLinking
+                                    -XX:+UseCompactObjectHeaders
                                 </arg>
                             </args>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+            <!--<plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.3.0</version>
@@ -823,7 +830,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.3.1</version>

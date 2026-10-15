@@ -92,10 +92,13 @@ class Patches {
 
     private static void removeIf(CodeBuilder.BlockCodeBuilder blockCodeBuilder) {
         blockCodeBuilder
+                .aload(1)
+                .swap()
                 .invokedynamic(PREDICATE_STRING_STARTS_WITH)
                 .invokeinterface(ConstantDescs.CD_List,
                         "removeIf",
-                        MethodTypeDesc.of(ConstantDescs.CD_boolean, PREDICATE_DESC));
+                        MethodTypeDesc.of(ConstantDescs.CD_boolean, PREDICATE_DESC))
+                .pop();
     }
 
     static MethodTransform callSwingUtilities2() {
