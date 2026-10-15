@@ -4,7 +4,7 @@ on:
     inputs:
       runtime_version:
         description: 'JDK version'
-        default: '24-ea'
+        default: '28-ea'
         required: true
       distribution:
         description: 'JDK Distribution'
