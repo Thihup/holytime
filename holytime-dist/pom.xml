@@ -786,6 +786,7 @@
                                 <arg>--add-options=
                                     --enable-preview
                                     --add-opens=java.base/java.lang.reflect=ALL-UNNAMED
+                                    --add-modules=java.instrument
                                     
                                     --finalization=disabled
                                     --sun-misc-unsafe-memory-access=allow
