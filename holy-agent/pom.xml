@@ -32,6 +32,13 @@
                 <configuration>
                     <compilerArgs>--add-exports=java.base/jdk.internal.classfile.components=dev.thihup.holytime.holy.agent</compilerArgs>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm</artifactId>
+                        <version>${asm.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
